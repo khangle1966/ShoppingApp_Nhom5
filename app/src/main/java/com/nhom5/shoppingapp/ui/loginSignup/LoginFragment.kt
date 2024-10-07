@@ -1,5 +1,4 @@
 package com.nhom5.shoppingapp.ui.loginSignup
-import com.nhom5.shoppingapp.ui.home.HomeFragment
 
 import android.os.Bundle
 import android.util.Patterns
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.nhom5.shoppingapp.databinding.FragmentLoginBinding
-import android.content.Context
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -23,7 +21,6 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
-        loadLoginInfo()
 
         // Sự kiện nút đăng nhập
         binding.loginLoginBtn.setOnClickListener {
@@ -73,56 +70,16 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    binding.loginErrorTextView.visibility = View.GONE
                     Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
-
-                    // Lưu thông tin đăng nhập nếu chọn "Remember Me"
-                    if (binding.loginRemSwitch.isChecked) {
-                        saveLoginInfo(email, password)
-                    } else {
-                        clearLoginInfo() // Xóa thông tin đăng nhập nếu "Remember Me" không được chọn
-                    }
-                    // Chuyển tới HomeFragment
-                    (activity as? LoginSignupActivity)?.loadFragment(HomeFragment())
+                    // Chuyển đến màn hình khác (Ví dụ: trang chủ)
                 } else {
-                    Toast.makeText(
-                        context,
-                        "Đăng nhập thất bại: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    binding.loginErrorTextView.text = "Đăng nhập thất bại: ${task.exception?.message}"
+                    binding.loginErrorTextView.visibility = View.VISIBLE
                 }
             }
     }
-    // Lưu thông tin đăng nhập
-    private fun saveLoginInfo(email: String, password: String) {
-        val sharedPreferences = activity?.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences?.edit()
-        editor?.putString("email", email)
-        editor?.putString("password", password)
-        editor?.putBoolean("switch_remember_text", true)
-        editor?.apply()
-    }
 
-    // Tải thông tin đăng nhập đã lưu
-    private fun loadLoginInfo() {
-        val sharedPreferences = activity?.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-        val rememberMe = sharedPreferences?.getBoolean("switch_remember_text", false) ?: false
-
-        if (rememberMe) {
-            val savedEmail = sharedPreferences?.getString("email", "")
-            val savedPassword = sharedPreferences?.getString("password", "")
-            binding.loginEmailEditText.setText(savedEmail)
-            binding.loginPasswordEditText.setText(savedPassword)
-            binding.loginRemSwitch.isChecked = true // Đặt trạng thái "Remember Me" là được chọn
-        }
-    }
-
-    // Xóa thông tin đăng nhập đã lưu
-    private fun clearLoginInfo() {
-        val sharedPreferences = activity?.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences?.edit()
-        editor?.clear()
-        editor?.apply()
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
