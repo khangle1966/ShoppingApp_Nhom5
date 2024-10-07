@@ -59,7 +59,7 @@ class LoginFragment : Fragment() {
                 false
             }
             password.isEmpty() -> {
-                binding.loginErrorTextView.text = "Vui lòng nhập mật khẩu"
+                binding.loginErrorTextView.text = "Vui lòng nhập mật khẩu!!!"
                 binding.loginErrorTextView.visibility = View.VISIBLE
                 false
             }
