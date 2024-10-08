@@ -1,28 +1,23 @@
 package com.nhom5.shoppingapp.ui.home
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhom5.shoppingapp.R
 import com.nhom5.shoppingapp.databinding.FragmentHomeBinding
 import com.nhom5.shoppingapp.model.Product
 import com.nhom5.shoppingapp.ui.adapters.ProductAdapter
-import com.nhom5.shoppingapp.ui.account.AccountFragment
-import com.nhom5.shoppingapp.ui.loginSignup.LoginFragment
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.navigation.fragment.findNavController
+import android.widget.Toast
+import android.widget.FrameLayout // Import FrameLayout để truy cập loaderLayout
 
-class HomeFragment : Fragment(R.layout.fragment_home), NavigationView.OnNavigationItemSelectedListener {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var loaderLayout: FrameLayout // Thêm biến cho loaderLayout
     private lateinit var productAdapter: ProductAdapter
     private val productList = mutableListOf<Product>()
     private val firestore = FirebaseFirestore.getInstance()
@@ -30,20 +25,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), NavigationView.OnNavigati
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Khởi tạo binding
         binding = FragmentHomeBinding.bind(view)
-        drawerLayout = binding.drawerLayout
 
-        toggle = ActionBarDrawerToggle(
-            activity as AppCompatActivity?,
-            drawerLayout,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        // Thiết lập NavigationView
-        binding.navView.setNavigationItemSelectedListener(this)
+        // Tìm kiếm loaderLayout từ view
+        loaderLayout = view.findViewById(R.id.loader_layout) // Truy cập loader_layout trực tiếp
 
         // Thiết lập RecyclerView cho sản phẩm
         productAdapter = ProductAdapter(productList)
@@ -51,6 +37,15 @@ class HomeFragment : Fragment(R.layout.fragment_home), NavigationView.OnNavigati
             layoutManager = GridLayoutManager(context, 2)
             adapter = productAdapter
         }
+
+        // Set up FloatingActionButton để thêm sản phẩm
+        val fab: FloatingActionButton = binding.homeFabAddProduct
+        fab.setOnClickListener {
+            findNavController().navigate(R.id.action_goto_addProduct)
+        }
+
+        // Hiển thị loader khi bắt đầu lấy dữ liệu
+        showLoader()
 
         // Lấy dữ liệu từ Firestore
         loadProducts()
@@ -66,28 +61,20 @@ class HomeFragment : Fragment(R.layout.fragment_home), NavigationView.OnNavigati
                     productList.add(product)
                 }
                 productAdapter.notifyDataSetChanged()
+                hideLoader() // Ẩn loader khi tải dữ liệu xong
             }
             .addOnFailureListener { exception ->
-                // Xử lý lỗi nếu cần
+                Toast.makeText(context, "Lỗi khi tải sản phẩm: ${exception.message}", Toast.LENGTH_SHORT).show()
+                hideLoader() // Ẩn loader nếu có lỗi
             }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_account -> {
-                (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, AccountFragment())
-                    .addToBackStack(null)
-                    .commit()
-            }
-            R.id.nav_logout -> {
-                FirebaseAuth.getInstance().signOut()
-                (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, LoginFragment())
-                    .commit()
-            }
-        }
-        drawerLayout.closeDrawers()
-        return true
+    private fun hideLoader() {
+        // Sử dụng biến loaderLayout để thay đổi visibility
+        loaderLayout.visibility = View.GONE
+    }
+
+    private fun showLoader() {
+        loaderLayout.visibility = View.VISIBLE
     }
 }
