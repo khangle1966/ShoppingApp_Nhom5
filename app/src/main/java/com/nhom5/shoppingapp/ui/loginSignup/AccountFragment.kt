@@ -1,41 +1,63 @@
 package com.nhom5.shoppingapp.ui.account
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.nhom5.shoppingapp.databinding.FragmentAccountBinding
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.nhom5.shoppingapp.R
+import com.nhom5.shoppingapp.databinding.FragmentAccountBinding
 
-class AccountFragment : Fragment() {
+class AccountFragment : Fragment(R.layout.fragment_account) {
 
-    private var _binding: FragmentAccountBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var auth: FirebaseAuth
-    private lateinit var user: FirebaseUser
+    private lateinit var binding: FragmentAccountBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAccountBinding.inflate(inflater, container, false)
-        auth = FirebaseAuth.getInstance()
-        user = auth.currentUser!!
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentAccountBinding.bind(view)
 
-        // Hiển thị thông tin tài khoản
-        displayUserInfo()
-
-        return binding.root
+        // Sự kiện khi người dùng nhấn nút Sign Out
+        binding.accountSignOutTv.setOnClickListener {
+            showSignOutDialog()
+        }
     }
 
-    private fun displayUserInfo() {
-
+    private fun showSignOutDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Sign Out?")
+            .setMessage("Bạn có chắc muốn đăng xuất khỏi ứng dụng không?")
+            .setPositiveButton("SIGN OUT") { dialog, _ ->
+                signOutUser()
+                dialog.dismiss()
+            }
+            .setNegativeButton("CANCEL") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun signOutUser() {
+        // Đăng xuất khỏi Firebase
+        FirebaseAuth.getInstance().signOut()
+
+        // Điều hướng về LoginFragment và xóa lịch sử điều hướng trước đó
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.homeFragment, true)  // Xóa hết các fragment trước đó khỏi back stack
+            .build()
+
+        findNavController().navigate(R.id.action_accountFragment_to_loginFragment, null, navOptions)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Kiểm tra trạng thái đăng nhập
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            // Điều hướng đến màn hình đăng nhập nếu chưa đăng nhập
+            findNavController().navigate(R.id.action_accountFragment_to_loginFragment)
+        }
     }
 }

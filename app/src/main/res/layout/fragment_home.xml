@@ -7,6 +7,7 @@
     android:focusableInTouchMode="true"
     tools:context=".ui.home.HomeFragment">
 
+    <!-- Include the Top App Bar (Search Bar) -->
     <include
         android:id="@+id/home_top_app_bar"
         layout="@layout/layout_home_top_app_bar"
@@ -14,10 +15,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
+    <!-- Include the Ad Layout below the Top App Bar -->
+    <include
+        android:id="@+id/home_ad_layout"
+        layout="@layout/layout_home_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/home_top_app_bar"
+        android:layout_marginBottom="16dp" />
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/home_top_app_bar">
+        android:layout_below="@id/home_ad_layout">
 
         <include
             android:id="@+id/loader_layout"
@@ -40,9 +51,11 @@
             app:flow_horizontalAlign="center"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:spanCount="2"
             tools:itemCount="10"
+            tools:layout_editor_absoluteY="16dp"
             tools:listitem="@layout/products_list_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

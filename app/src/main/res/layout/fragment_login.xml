@@ -64,11 +64,11 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_email_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:paddingTop="12dp"
+             android:paddingBottom="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

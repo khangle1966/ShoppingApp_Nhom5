@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.nhom5.shoppingapp.databinding.FragmentLoginBinding
 import android.content.Context
-import com.nhom5.shoppingapp.ui.home.MainActivity // Import MainActivity
+import com.nhom5.shoppingapp.ui.home.MainActivity
+import androidx.navigation.fragment.findNavController
+import com.nhom5.shoppingapp.R
 
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -40,7 +42,7 @@ class LoginFragment : Fragment() {
 
         // Chuyển đến trang đăng ký
         binding.loginSignupTextView.setOnClickListener {
-            (activity as? LoginSignupActivity)?.loadFragment(SignupFragment())
+            findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
         }
 
         return binding.root
@@ -65,7 +67,7 @@ class LoginFragment : Fragment() {
                 false
             }
             else -> {
-                binding.loginErrorTextView.visibility = View.GONE // Ẩn thông báo lỗi khi thông tin hợp lệ
+                binding.loginErrorTextView.visibility = View.GONE
                 true
             }
         }
@@ -75,14 +77,12 @@ class LoginFragment : Fragment() {
     private fun login(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
-
+                if (task.isSuccessful) { Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
                     // Lưu thông tin đăng nhập nếu chọn "Remember Me"
                     if (binding.loginRemSwitch.isChecked) {
                         saveLoginInfo(email, password)
                     } else {
-                        clearLoginInfo() // Xóa thông tin đăng nhập nếu "Remember Me" không được chọn
+                        clearLoginInfo()
                     }
 
                     // Chuyển tới MainActivity
@@ -116,7 +116,7 @@ class LoginFragment : Fragment() {
             val savedPassword = sharedPreferences?.getString("password", "")
             binding.loginEmailEditText.setText(savedEmail)
             binding.loginPasswordEditText.setText(savedPassword)
-            binding.loginRemSwitch.isChecked = true // Đặt trạng thái "Remember Me" là được chọn
+            binding.loginRemSwitch.isChecked = true
         }
     }
 

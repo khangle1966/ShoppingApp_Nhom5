@@ -22,7 +22,7 @@
             android:background="@drawable/round_outline_rect"
             android:contentDescription="@string/home_ad_image_desc"
             android:scaleType="fitXY"
-            android:src="@drawable/ad_ex_1"
+            android:src="@drawable/ad_ex_2"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

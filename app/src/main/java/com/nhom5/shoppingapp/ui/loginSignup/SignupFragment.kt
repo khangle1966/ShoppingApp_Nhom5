@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController // Import NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.nhom5.shoppingapp.R // Import R
 import com.nhom5.shoppingapp.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment() {
+
     private lateinit var auth: FirebaseAuth
     private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
@@ -36,9 +39,9 @@ class SignupFragment : Fragment() {
             }
         }
 
-        // Chuyển đến trang đăng nhập
+        // Chuyển đến trang đăng nhập khi người dùng nhấn vào signup_login_text_view
         binding.signupLoginTextView.setOnClickListener {
-            (activity as? LoginSignupActivity)?.loadFragment(LoginFragment())
+            findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
         }
 
         return binding.root
