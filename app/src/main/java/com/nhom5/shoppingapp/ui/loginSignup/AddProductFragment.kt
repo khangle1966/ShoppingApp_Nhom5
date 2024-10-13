@@ -35,7 +35,8 @@ class AddProductFragment : Fragment() {
 
         // Cấu hình RecyclerView
         imageAdapter = ImageAdapter(selectedImages) { uri -> removeImage(uri) }
-        binding.addProImagesRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.addProImagesRv.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.addProImagesRv.adapter = imageAdapter
 
         // Mở thư viện chọn hình ảnh khi nhấn nút thêm hình ảnh
@@ -44,29 +45,29 @@ class AddProductFragment : Fragment() {
         }
 
         binding.addProBtn.setOnClickListener {
-            // Hiển thị loader khi người dùng nhấn nút Add Product
-            showLoader()
+            showLoader() // Hiển thị loader
 
-            // Lấy thông tin sản phẩm từ các trường nhập liệu
+            // Lấy thông tin từ các trường nhập liệu
             val productName = binding.proNameEditText.text.toString().trim()
-            val productPrice = binding.proPriceEditText.text.toString().trim()
-            val productMrp = binding.proMrpEditText.text.toString().trim()
+            val productPrice = binding.proPriceEditText.text.toString().toDoubleOrNull() ?: 0.0
+            val productMrp = binding.proMrpEditText.text.toString().toDoubleOrNull() ?: 0.0
+
             val productDesc = binding.proDescEditText.text.toString().trim()
 
-            // Kiểm tra dữ liệu hợp lệ trước khi thêm sản phẩm
             if (validateInput(productName, productPrice, productMrp, productDesc)) {
-                // Nếu có hình ảnh, upload trước rồi thêm sản phẩm
                 if (selectedImages.isNotEmpty()) {
                     uploadImagesAndAddProduct(productName, productPrice, productMrp, productDesc)
                 } else {
-                    addProductToFirebase(Product(
-                        name = productName,
-                        price = productPrice,
-                        actualPrice = productMrp,
-                        imageUrl = "", // Không có hình ảnh
-                        rating = 0f,
-                        offerPercentage = "0"
-                    ))
+                    addProductToFirebase(
+                        Product(
+                            name = productName,
+                            price = productPrice,
+                            actualPrice = productMrp,
+                            imageUrl = "",
+                            rating = 0f,
+                            offerPercentage = "0"
+                        )
+                    )
                 }
             } else {
                 hideLoader() // Ẩn loader nếu có lỗi
@@ -76,26 +77,27 @@ class AddProductFragment : Fragment() {
         return binding.root
     }
 
-    private fun validateInput(name: String, price: String, mrp: String, desc: String): Boolean {
+    private fun validateInput(
+        name: String,
+        price: Double,
+        mrp: Double,
+        desc: String
+    ): Boolean {
         return when {
             name.isEmpty() -> {
-                binding.addProErrorTextView.text = "Tên sản phẩm không được để trống"
-                binding.addProErrorTextView.visibility = View.VISIBLE
+                showError("Tên sản phẩm không được để trống")
                 false
             }
-            price.isEmpty() -> {
-                binding.addProErrorTextView.text = "Giá bán không được để trống"
-                binding.addProErrorTextView.visibility = View.VISIBLE
+            price <= 0.0 -> {
+                showError("Giá bán phải lớn hơn 0")
                 false
             }
-            mrp.isEmpty() -> {
-                binding.addProErrorTextView.text = "Giá niêm yết không được để trống"
-                binding.addProErrorTextView.visibility = View.VISIBLE
+            mrp <= 0.0 -> {
+                showError("Giá niêm yết phải lớn hơn 0")
                 false
             }
             desc.isEmpty() -> {
-                binding.addProErrorTextView.text = "Mô tả không được để trống"
-                binding.addProErrorTextView.visibility = View.VISIBLE
+                showError("Mô tả không được để trống")
                 false
             }
             else -> {
@@ -105,43 +107,58 @@ class AddProductFragment : Fragment() {
         }
     }
 
+    private fun showError(message: String) {
+        binding.addProErrorTextView.text = message
+        binding.addProErrorTextView.visibility = View.VISIBLE
+    }
+
     private fun addProductToFirebase(product: Product) {
         firestore.collection("products")
             .add(product)
             .addOnSuccessListener {
                 Toast.makeText(context, "Sản phẩm đã được thêm", Toast.LENGTH_SHORT).show()
-                hideLoader() // Ẩn loader sau khi thêm sản phẩm thành công
+                hideLoader()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
-                hideLoader() // Ẩn loader nếu có lỗi xảy ra
+                hideLoader()
             }
     }
 
-    private fun uploadImagesAndAddProduct(name: String, price: String, mrp: String, desc: String) {
+    private fun uploadImagesAndAddProduct(
+        name: String,
+        price: Double,
+        mrp: Double,
+        desc: String
+    ) {
         val imageUrls = mutableListOf<String>()
-        selectedImages.forEachIndexed { index, uri ->
-            val filePath = storage.child("images/" + UUID.randomUUID().toString())
+        selectedImages.forEach { uri ->
+            val filePath = storage.child("images/${UUID.randomUUID()}")
             filePath.putFile(uri)
                 .addOnSuccessListener {
                     filePath.downloadUrl.addOnSuccessListener { downloadUri ->
                         imageUrls.add(downloadUri.toString())
                         if (imageUrls.size == selectedImages.size) {
-                            // Sau khi tất cả ảnh đã upload, thêm sản phẩm
-                            addProductToFirebase(Product(
-                                name = name,
-                                price = price,
-                                actualPrice = mrp,
-                                imageUrl = imageUrls[0], // Lấy ảnh đầu tiên làm ảnh chính
-                                rating = 0f,
-                                offerPercentage = "0"
-                            ))
+                            addProductToFirebase(
+                                Product(
+                                    name = name,
+                                    price = price,
+                                    actualPrice = mrp,
+                                    imageUrl = imageUrls[0],
+                                    rating = 0f,
+                                    offerPercentage = "0"
+                                )
+                            )
                         }
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Lỗi upload hình ảnh: ${it.message}", Toast.LENGTH_SHORT).show()
-                    hideLoader() // Ẩn loader nếu upload hình ảnh thất bại
+                    Toast.makeText(
+                        context,
+                        "Lỗi upload hình ảnh: ${it.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    hideLoader()
                 }
         }
     }
@@ -157,14 +174,12 @@ class AddProductFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             selectedImageUri = data.data
-            selectedImageUri?.let {
-                imageAdapter.addImage(it) // Thêm ảnh vào RecyclerView
-            }
+            selectedImageUri?.let { imageAdapter.addImage(it) }
         }
     }
 
     private fun removeImage(uri: Uri) {
-        imageAdapter.removeImage(uri) // Xóa ảnh khỏi RecyclerView
+        imageAdapter.removeImage(uri)
     }
 
     private fun showLoader() {

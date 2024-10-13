@@ -168,5 +168,16 @@
     <string name="redirect_home_timer_text">Redirecting to home in %s</string>
     <string name="status_dialog_title">Select Status of Product</string>
     <string name="price_card_status_label_string">Order Status</string>
+    <string name="sort">Sort</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="sort_options">
+        <item>Name (A-Z)</item>
+        <item>Name (Z-A)</item>
+        <item>Price (Low-High)</item>
+        <item>Price (High-Low)</item>
+    </string-array>
+
+
 
 </resources>

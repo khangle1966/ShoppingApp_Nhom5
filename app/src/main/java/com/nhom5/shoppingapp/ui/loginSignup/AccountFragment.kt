@@ -27,7 +27,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
     private fun showSignOutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sign Out?")
-            .setMessage("Bạn có chắc muốn đăng xuất khỏi ứng dụng không?")
+            .setMessage("Bạnn có chắc muốn đăng xuất khỏi ứng dụng không?")
             .setPositiveButton("SIGN OUT") { dialog, _ ->
                 signOutUser()
                 dialog.dismiss()

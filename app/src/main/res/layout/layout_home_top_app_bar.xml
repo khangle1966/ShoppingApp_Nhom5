@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_app_bar_layout"
     android:layout_width="match_parent"
@@ -18,19 +19,28 @@
         app:titleTextAppearance="@style/TextAppearance.MyTheme.Headline6"
         app:titleTextColor="@color/black">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/searchOutlinedTextLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:focusable="false"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
+
+            <!-- Khung Search -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/searchOutlinedTextLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+            android:layout_marginEnd="8dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:boxCornerRadiusBottomStart="10dp"
             app:boxStrokeColor="@color/blue_accent_300"
             app:endIconMode="clear_text"
             app:endIconTint="@color/blue_accent_300"
-            app:hintEnabled="false"
             app:startIconDrawable="@drawable/ic_search_24"
             app:startIconTint="@color/blue_accent_300">
 
@@ -41,15 +51,29 @@
                 android:hint="@string/search_placeholder_text"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
+                android:padding="12dp"
                 android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                 android:textColor="@color/gray"
                 android:textColorHint="@color/gray" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.appbar.MaterialToolbar>
+        <!-- Khung Sort (Button) -->
+        <Button
+            android:id="@+id/sortButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sort"
 
 
-</com.google.android.material.appbar.AppBarLayout>
+            android:textColor="@color/blue_accent_300"
+        android:background="@drawable/sort_background"
+        android:padding="8dp"
+        android:textAllCaps="false"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
+    </LinearLayout>
+</com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
