@@ -3,12 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.product.AddProductFragment">
 
+    <!-- App Bar -->
     <include
         android:id="@+id/add_pro_app_bar"
         layout="@layout/layout_top_bar" />
 
+    <!-- Loader layout -->
     <include
         android:id="@+id/loader_layout"
         layout="@layout/layout_circular_loader"
@@ -17,6 +20,7 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
+    <!-- Nội dung chính -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="72dp">
 
+            <!-- Tên sản phẩm -->
             <TextView
                 android:id="@+id/add_pro_name_label"
                 android:layout_width="0dp"
@@ -69,6 +74,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Giá bán -->
             <TextView
                 android:id="@+id/add_pro_price_label"
                 android:layout_width="0dp"
@@ -110,6 +116,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Giá niêm yết (MRP) -->
             <TextView
                 android:id="@+id/add_pro_mrp_label"
                 android:layout_width="0dp"
@@ -151,6 +158,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Mô tả sản phẩm -->
             <TextView
                 android:id="@+id/add_pro_desc_label"
                 android:layout_width="0dp"
@@ -194,6 +202,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Thêm hình ảnh -->
             <TextView
                 android:id="@+id/add_pro_images_label"
                 android:layout_width="0dp"
@@ -237,6 +246,7 @@
                 tools:itemCount="5"
                 tools:listitem="@layout/add_images_item" />
 
+            <!-- Chọn Size -->
             <TextView
                 android:id="@+id/add_pro_sizes_label"
                 android:layout_width="0dp"
@@ -244,7 +254,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/add_pro_sizes_label_text"
+                android:text="Chọn Size"
                 android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -266,8 +276,37 @@
                 app:layout_constraintTop_toBottomOf="@id/add_pro_sizes_label"
                 app:selectionRequired="true">
 
+                <!-- Sửa layout_width và layout_height cho các Chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/size_chip_s"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="S" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/size_chip_m"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/size_chip_l"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="L" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/size_chip_xl"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="XL" />
             </com.google.android.material.chip.ChipGroup>
 
+            <!-- Chọn Màu -->
             <TextView
                 android:id="@+id/add_pro_color_label"
                 android:layout_width="0dp"
@@ -275,7 +314,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/add_pro_color_label_text"
+                android:text="Chọn Màu"
                 android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -297,8 +336,56 @@
                 app:layout_constraintTop_toBottomOf="@id/add_pro_color_label"
                 app:selectionRequired="true">
 
-            </com.google.android.material.chip.ChipGroup>
+                <!-- Chỉnh layout_width và layout_height cho các Chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_black"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đen"
+                    app:chipBackgroundColor="@color/black" />
 
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_white"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trắng"
+                    app:chipBackgroundColor="@color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_red"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đỏ"
+                    app:chipBackgroundColor="@color/red_600" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_green"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xanh Lá"
+                    app:chipBackgroundColor="@color/green_500" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_blue"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xanh Dương"
+                    app:chipBackgroundColor="@color/blue_500" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/color_chip_yellow"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vàng"
+                    app:chipBackgroundColor="@color/gold" />
+            </com.google.android.material.chip.ChipGroup>
+            <!-- Thông báo lỗi -->
             <TextView
                 android:id="@+id/add_pro_error_text_view"
                 android:layout_width="0dp"
@@ -320,6 +407,7 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Nút Thêm Sản Phẩm -->
     <Button
         android:id="@+id/add_pro_btn"
         android:layout_width="match_parent"

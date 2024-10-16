@@ -40,7 +40,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         loaderLayout = view.findViewById(R.id.loader_layout)
 
         // Thiết lập RecyclerView
-        productAdapter = ProductAdapter(filteredProductList)
+        productAdapter = ProductAdapter(filteredProductList) { product ->
+            val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product.productId)
+            findNavController().navigate(action)
+        }
+
         binding.productsRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = productAdapter
@@ -75,6 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         loadProducts()
     }
 
+
     private fun showSortMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
@@ -100,7 +105,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 for (document in documents) {
                     try {
-                        val product = document.toObject(Product::class.java)
+                        // Lấy product và gán documentId vào productId
+                        val product = document.toObject(Product::class.java).copy(productId = document.id)
                         fullProductList.add(product)
                         filteredProductList.add(product)
                     } catch (e: Exception) {

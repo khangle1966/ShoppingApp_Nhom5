@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- color_radio_selected.xml -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Larger blue circle in back -->
+    <!-- Vòng tròn lớn bên ngoài -->
     <item>
         <shape android:shape="oval">
             <solid android:color="@color/transparent" />
@@ -12,10 +12,9 @@
                 android:height="48dp" />
         </shape>
     </item>
-    <!-- Smaller white circle in front -->
+    <!-- Vòng tròn nhỏ bên trong -->
     <item>
         <shape android:shape="oval">
-            <!-- transparent stroke = larger_circle_size - smaller_circle_size -->
             <stroke
                 android:color="@android:color/transparent"
                 android:width="32dp" />

@@ -15,6 +15,8 @@ import com.nhom5.shoppingapp.databinding.FragmentAddProductBinding
 import com.nhom5.shoppingapp.model.Product
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
+import com.nhom5.shoppingapp.R
+import com.google.android.material.chip.Chip
 
 class AddProductFragment : Fragment() {
 
@@ -27,17 +29,47 @@ class AddProductFragment : Fragment() {
     private lateinit var imageAdapter: ImageAdapter
     private val selectedImages = mutableListOf<Uri>()
 
+    // Biến để lưu lựa chọn nhiều size và color
+    private val selectedSizes: MutableList<String> = mutableListOf()
+    private val selectedColors: MutableList<String> = mutableListOf()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddProductBinding.inflate(inflater, container, false)
 
-        // Cấu hình RecyclerView
+        // Cấu hình RecyclerView cho hình ảnh
         imageAdapter = ImageAdapter(selectedImages) { uri -> removeImage(uri) }
         binding.addProImagesRv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.addProImagesRv.adapter = imageAdapter
+
+        // Xử lý chọn nhiều size từ ChipGroup
+        for (i in 0 until binding.addProSizeChipGroup.childCount) {
+            val chip = binding.addProSizeChipGroup.getChildAt(i) as Chip
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                val size = chip.text.toString()
+                if (isChecked) {
+                    selectedSizes.add(size) // Thêm size vào danh sách nếu được chọn
+                } else {
+                    selectedSizes.remove(size) // Xóa size khỏi danh sách nếu bỏ chọn
+                }
+            }
+        }
+
+        // Xử lý chọn nhiều color từ ChipGroup
+        for (i in 0 until binding.addProColorChipGroup.childCount) {
+            val chip = binding.addProColorChipGroup.getChildAt(i) as Chip
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                val color = chip.text.toString()
+                if (isChecked) {
+                    selectedColors.add(color) // Thêm color vào danh sách nếu được chọn
+                } else {
+                    selectedColors.remove(color) // Xóa color khỏi danh sách nếu bỏ chọn
+                }
+            }
+        }
 
         // Mở thư viện chọn hình ảnh khi nhấn nút thêm hình ảnh
         binding.addProImagesBtn.setOnClickListener {
@@ -51,7 +83,6 @@ class AddProductFragment : Fragment() {
             val productName = binding.proNameEditText.text.toString().trim()
             val productPrice = binding.proPriceEditText.text.toString().toDoubleOrNull() ?: 0.0
             val productMrp = binding.proMrpEditText.text.toString().toDoubleOrNull() ?: 0.0
-
             val productDesc = binding.proDescEditText.text.toString().trim()
 
             if (validateInput(productName, productPrice, productMrp, productDesc)) {
@@ -63,9 +94,12 @@ class AddProductFragment : Fragment() {
                             name = productName,
                             price = productPrice,
                             actualPrice = productMrp,
-                            imageUrl = "",
+                            imageUrl = listOf(), // Không có hình ảnh ban đầu
                             rating = 0f,
-                            offerPercentage = "0"
+                            offerPercentage = "0",
+                            size = selectedSizes,  // Truyền danh sách các size đã chọn
+                            color = selectedColors,  // Truyền danh sách các màu đã chọn
+                            specifications = productDesc
                         )
                     )
                 }
@@ -98,6 +132,14 @@ class AddProductFragment : Fragment() {
             }
             desc.isEmpty() -> {
                 showError("Mô tả không được để trống")
+                false
+            }
+            selectedSizes.isEmpty() -> {
+                showError("Hãy chọn ít nhất 1 size cho sản phẩm")
+                false
+            }
+            selectedColors.isEmpty() -> {
+                showError("Hãy chọn ít nhất 1 màu cho sản phẩm")
                 false
             }
             else -> {
@@ -144,9 +186,12 @@ class AddProductFragment : Fragment() {
                                     name = name,
                                     price = price,
                                     actualPrice = mrp,
-                                    imageUrl = imageUrls[0],
+                                    imageUrl = imageUrls, // Truyền toàn bộ danh sách URL hình ảnh
                                     rating = 0f,
-                                    offerPercentage = "0"
+                                    offerPercentage = "0",
+                                    size = selectedSizes,  // Truyền danh sách các size đã chọn
+                                    color = selectedColors,  // Truyền danh sách các màu đã chọn
+                                    specifications = desc
                                 )
                             )
                         }
