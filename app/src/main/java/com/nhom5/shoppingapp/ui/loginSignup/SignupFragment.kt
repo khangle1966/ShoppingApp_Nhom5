@@ -10,6 +10,8 @@ import androidx.navigation.fragment.findNavController // Import NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.nhom5.shoppingapp.R // Import R
 import com.nhom5.shoppingapp.databinding.FragmentSignupBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.nhom5.shoppingapp.model.User // Đảm bảo đường dẫn này đúng với nơi bạn lưu trữ lớp User
 
 class SignupFragment : Fragment() {
 
@@ -78,12 +80,44 @@ class SignupFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    showToast("Tạo tài khoản thành công!")
+                    // Đăng ký thành công, lấy thông tin người dùng
+                    val firebaseUser = auth.currentUser
+                    val userId = firebaseUser?.uid
+                    val userEmail = firebaseUser?.email
+                    val name = binding.signupNameEditText.text.toString()
+                    val mobile = binding.signupMobileEditText.text.toString()
+
+                    // Tạo đối tượng User
+                    val user = User(
+                        UID = userId.toString(),
+                        Mobile = mobile,  // Tạm thời, sẽ cập nhật sau
+                        Address = "",  // Tạm thời, sẽ cập nhật sau
+                        Name = name,  // Lấy tên từ EditText
+                        Email = userEmail.toString()
+                    )
+
+                    // Lưu đối tượng User vào Firebase Firestore
+                    val db = FirebaseFirestore.getInstance()
+                    userId?.let {
+                        db.collection("users").document(it).set(user)
+                            .addOnCompleteListener { dbTask ->
+                                if (dbTask.isSuccessful) {
+                                    // Lưu dữ liệu thành công
+                                    Toast.makeText(context, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    // Xử lý lỗi khi lưu dữ liệu
+                                    Toast.makeText(context, "Không thể lưu dữ liệu người dùng: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                    }
                 } else {
-                    hienThiLoi("Đăng ký thất bại: ${task.exception?.message}")
+                    // Xử lý lỗi đăng ký
+                    Toast.makeText(context, "Đăng ký thất bại: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
+
+
 
     private fun hienThiLoi(message: String) {
         binding.signupErrorTextView.text = message

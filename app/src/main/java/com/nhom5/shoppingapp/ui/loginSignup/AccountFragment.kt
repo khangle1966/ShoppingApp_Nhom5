@@ -22,12 +22,18 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
         binding.accountSignOutTv.setOnClickListener {
             showSignOutDialog()
         }
+
+        // Sự kiện khi người dùng nhấn vào mục Profile
+        binding.accountProfileTv.setOnClickListener {
+            openProfileFragment()
+        }
     }
 
+    // Hiển thị dialog xác nhận đăng xuất
     private fun showSignOutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sign Out?")
-            .setMessage("Bạnn có chắc muốn đăng xuất khỏi ứng dụng không?")
+            .setMessage("Bạn có chắc muốn đăng xuất khỏi ứng dụng không?")
             .setPositiveButton("SIGN OUT") { dialog, _ ->
                 signOutUser()
                 dialog.dismiss()
@@ -38,6 +44,7 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             .show()
     }
 
+    // Phương thức đăng xuất người dùng
     private fun signOutUser() {
         // Đăng xuất khỏi Firebase
         FirebaseAuth.getInstance().signOut()
@@ -48,6 +55,11 @@ class AccountFragment : Fragment(R.layout.fragment_account) {
             .build()
 
         findNavController().navigate(R.id.action_accountFragment_to_loginFragment, null, navOptions)
+    }
+
+    // Điều hướng đến ProfileFragment
+    private fun openProfileFragment() {
+        findNavController().navigate(R.id.action_accountFragment_to_profileFragment)
     }
 
     override fun onStart() {

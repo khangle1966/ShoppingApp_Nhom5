@@ -169,15 +169,36 @@
     <string name="status_dialog_title">Select Status of Product</string>
     <string name="price_card_status_label_string">Order Status</string>
     <string name="sort">Sort</string>
-<!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="avatar_desc">Avatar</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_email">Enter your email</string>
+    <string name="enter_phone">Enter your phone number</string>
+    <string name="enter_address">Enter your address</string>
+    <string name="profile_title_desc">Profile Title</string>
+
+    <!-- Thêm chuỗi mô tả cho icon người dùng -->
+    <string name="user_icon_desc">User Icon</string>
+
+    <!-- Thêm chuỗi mô tả cho icon email -->
+    <string name="email_icon_desc">Email Icon</string>
+
+    <!-- Thêm chuỗi mô tả cho icon số điện thoại -->
+    <string name="phone_icon_desc">Phone Icon</string>
+
+    <!-- Thêm chuỗi mô tả cho icon địa chỉ -->
+    <string name="location_icon_desc">Location Icon</string>
+    <string name="save">Save</string>
+    <string name="account_fragment_label">Account</string>
+    <string name="profile_fragment_label">Profile</string>
     <string-array name="sort_options">
         <item>Name (A-Z)</item>
         <item>Name (Z-A)</item>
         <item>Price (Low-High)</item>
         <item>Price (High-Low)</item>
     </string-array>
-
 
 
 </resources>

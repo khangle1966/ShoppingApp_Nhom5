@@ -45,6 +45,7 @@ android {
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
     }
+
 }
 
 dependencies {
@@ -119,4 +120,5 @@ dependencies {
 
     //navigation testing
     androidTestImplementation "androidx.navigation:navigation-testing:2.3.5"
+
 }
