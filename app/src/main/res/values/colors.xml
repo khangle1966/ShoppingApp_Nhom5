@@ -22,5 +22,6 @@
     <color name="blue_shadow_color">#B9DADF</color>
     <color name="loader_background_color">#55AAAAAA</color>
     <color name="colorPrimary">#6200EE</color>
-
+    <!-- Định nghĩa màu cho đường kẻ nét đứt -->
+    <color name="line_color">#BDBDBD</color> <!-- Đây là màu xám cho đường nét đứt -->
 </resources>
