@@ -102,9 +102,11 @@
                 android:hint="@string/enter_email"
                 android:textSize="16sp"
                 android:inputType="textEmailAddress"
+                android:focusable="false"
                 android:autofillHints="emailAddress"
                 android:minHeight="48dp"
-                android:padding="12dp"/>
+                android:textColor="@android:color/darker_gray"
+            android:padding="12dp"/>
         </LinearLayout>
 
 
