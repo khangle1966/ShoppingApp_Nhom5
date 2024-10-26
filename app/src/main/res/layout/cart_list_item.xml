@@ -47,9 +47,9 @@
             app:layout_constraintEnd_toStartOf="@+id/cart_product_like_btn"
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="some title may be two lines" />
+            tools:text="Product Name" />
 
-        <!-- Thông tin về size của sản phẩm -->
+        <!-- Size đã chọn -->
         <TextView
             android:id="@+id/cart_product_size_tv"
             android:layout_width="0dp"
@@ -61,9 +61,9 @@
             app:layout_constraintEnd_toStartOf="@+id/cart_product_like_btn"
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toBottomOf="@id/cart_product_title_tv"
-            tools:text="Size: L" />
+            tools:text="Size: M" />
 
-        <!-- Thông tin về màu của sản phẩm -->
+        <!-- Color đã chọn -->
         <TextView
             android:id="@+id/cart_product_color_tv"
             android:layout_width="0dp"
@@ -76,6 +76,8 @@
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toBottomOf="@id/cart_product_size_tv"
             tools:text="Color: Red" />
+
+
 
         <ImageButton
             android:id="@+id/cart_product_like_btn"
@@ -119,7 +121,9 @@
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toBottomOf="@+id/cart_product_color_tv"
             app:layout_constraintVertical_bias="1.0"
-            tools:text="$1234.56" />
+            android:textSize="15sp"
+            tools:text="Unit Price: $1234.56" />
+
 
         <LinearLayout
             android:id="@+id/cart_product_quantity_buttons_layout"
@@ -137,7 +141,7 @@
 
             <ImageButton
                 android:id="@+id/cart_product_minus_btn"
-                android:layout_width="36dp"
+                android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@null"
@@ -146,7 +150,7 @@
 
             <TextView
                 android:id="@+id/cart_product_quantity_text_View"
-                android:layout_width="40dp"
+                android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@color/blue_shadow_color"
@@ -158,7 +162,7 @@
 
             <ImageButton
                 android:id="@+id/cart_product_plus_btn"
-                android:layout_width="36dp"
+                android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@null"
