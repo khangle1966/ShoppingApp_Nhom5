@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".ui.cart.CartFragment">
 
+    <!-- App Bar -->
     <include
         android:id="@+id/cart_app_bar"
         layout="@layout/layout_no_icon_app_bar"
@@ -13,19 +13,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
+    <!-- Loader layout -->
     <include
         android:id="@+id/loader_layout"
         layout="@layout/layout_circular_loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:layout_below="@id/cart_app_bar" />
 
+    <!-- Main content layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cart_app_bar"
         android:layout_marginBottom="72dp">
 
+        <!-- Hiển thị khi giỏ hàng trống -->
         <TextView
             android:id="@+id/cart_empty_text_view"
             android:layout_width="0dp"
@@ -38,28 +42,149 @@
             android:textAppearance="@style/TextAppearance.MyTheme.Headline3"
             android:textColor="@color/blue_accent_300"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- RecyclerView để hiển thị sản phẩm trong giỏ hàng -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cart_products_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:padding="8dp"
-            app:flow_horizontalAlign="center"
-            app:flow_verticalAlign="center"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cart_summary_card"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="2"
             tools:listitem="@layout/cart_list_item" />
+
+        <!-- CardView để bọc quanh phần hiển thị Items, Shipping, Import Charges và Total Price -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cart_summary_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Layout hiển thị tổng tiền, phí ship và phát sinh -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- Items (tổng giá sản phẩm) -->
+                <TextView
+                    android:id="@+id/items_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Items"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/items_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/items_label" />
+
+                <!-- Shipping (phí ship) -->
+                <TextView
+                    android:id="@+id/shipping_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shipping"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/items_label"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/shipping_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/items_price"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Import Charges (giá phát sinh) -->
+                <TextView
+                    android:id="@+id/import_charges_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Import Charges"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/shipping_label"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/import_charges_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/shipping_price"
+                    android:layout_marginTop="8dp" />
+
+                <!-- View để tạo đường kẻ ngang nét đứt -->
+                <com.nhom5.shoppingapp.ui.customviews.DashedLineView
+                    android:id="@+id/divider_dashed"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/import_charges_price"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Tổng tiền -->
+                <TextView
+                    android:id="@+id/total_price_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Price"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_dashed" />
+
+                <TextView
+                    android:id="@+id/total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue_accent_300"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_dashed"
+                    android:layout_marginTop="16dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Nút thanh toán -->
     <Button
         android:id="@+id/cart_check_out_btn"
         android:layout_width="match_parent"

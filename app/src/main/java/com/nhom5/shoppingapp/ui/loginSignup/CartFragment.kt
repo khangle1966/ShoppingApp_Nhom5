@@ -69,6 +69,7 @@ class CartFragment : Fragment(), CartItemActionListener {
                 if (cartItems.isNotEmpty()) {
                     binding.cartEmptyTextView.visibility = View.GONE
                     cartAdapter.updateCartItems(cartItems) // Cập nhật dữ liệu giỏ hàng trong adapter
+                    updateSummaryInfo() // Cập nhật thông tin tổng tiền
                 } else {
                     binding.cartEmptyTextView.visibility = View.VISIBLE
                 }
@@ -81,6 +82,36 @@ class CartFragment : Fragment(), CartItemActionListener {
             }
     }
 
+
+    private fun updateSummaryInfo() {
+        // Tính tổng tiền sản phẩm (Items)
+        val totalItemsPrice = cartItems.sumOf { it.price * it.quantity }
+
+        // Shipping và Import Charges
+        val shipping: Double
+        val importCharges: Double
+
+        // Kiểm tra nếu giỏ hàng trống
+        if (cartItems.isEmpty()) {
+            shipping = 0.0
+            importCharges = 0.0
+        } else {
+            shipping = 30.0 // Phí ship mặc định
+            importCharges = 30.0 // Phí phát sinh mặc định
+        }
+
+        // Tính tổng tiền cuối cùng (Total Price)
+        val totalPrice = totalItemsPrice + shipping + importCharges
+
+        // Cập nhật các TextView trong giao diện
+        binding.itemsPrice.text = "$%.2f".format(totalItemsPrice)
+        binding.shippingPrice.text = "$%.2f".format(shipping)
+        binding.importChargesPrice.text = "$%.2f".format(importCharges)
+        binding.totalPrice.text = "$%.2f".format(totalPrice)
+    }
+
+
+
     override fun onDelete(cartItem: CartItem) {
         val userId = currentUser?.uid ?: return
         val cartItemRef = firestore.collection("carts").document(userId).collection("cartItems").document(cartItem.id)
@@ -91,6 +122,9 @@ class CartFragment : Fragment(), CartItemActionListener {
                 // Xóa sản phẩm khỏi danh sách và cập nhật adapter
                 cartItems.remove(cartItem)
                 cartAdapter.updateCartItems(cartItems)
+
+                // Cập nhật tổng tiền sau khi xóa
+                updateSummaryInfo()
             }
             .addOnFailureListener { e ->
                 showError("Không thể xóa sản phẩm: ${e.message}")
@@ -110,6 +144,7 @@ class CartFragment : Fragment(), CartItemActionListener {
                 if (index != -1) {
                     cartItems[index] = cartItem.copy(quantity = newQuantity)
                     cartAdapter.updateCartItems(cartItems)
+                    updateSummaryInfo() // Cập nhật tổng tiền sau khi tăng số lượng
                 }
             }
             .addOnFailureListener { e ->
@@ -131,6 +166,7 @@ class CartFragment : Fragment(), CartItemActionListener {
                     if (index != -1) {
                         cartItems[index] = cartItem.copy(quantity = newQuantity)
                         cartAdapter.updateCartItems(cartItems)
+                        updateSummaryInfo() // Cập nhật tổng tiền sau khi giảm số lượng
                     }
                 }
                 .addOnFailureListener { e ->
