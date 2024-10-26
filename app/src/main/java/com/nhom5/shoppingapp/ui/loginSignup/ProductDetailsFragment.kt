@@ -16,6 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.fragment.findNavController
 import  com.nhom5.shoppingapp.R
+import android.util.Log
+
+
 class ProductDetailsFragment : Fragment() {
     private lateinit var binding: FragmentProductDetailsBinding
     private lateinit var productViewModel: ProductViewModel
@@ -111,35 +114,78 @@ class ProductDetailsFragment : Fragment() {
 
     // Hàm để thêm sản phẩm vào giỏ hàng trong Firestore
     private fun addProductToCart(userId: String, product: Product) {
-        val cartRef = firestore.collection("carts").document(userId).collection("cartItems").document(product.productId)
+        val selectedSizeId = binding.proDetailsSizesRadioGroup.checkedRadioButtonId
+        val selectedSize = if (selectedSizeId != -1) {
+            view?.findViewById<RadioButton>(selectedSizeId)?.text.toString()
+        } else {
+            null
+        }
+
+        val selectedColorId = binding.proDetailsColorsRadioGroup.checkedRadioButtonId
+        val selectedColor = if (selectedColorId != -1) {
+            view?.findViewById<RadioButton>(selectedColorId)?.text.toString()
+        } else {
+            null
+        }
+
+        // Thêm dòng Log để kiểm tra giá trị của selectedSize và selectedColor
+        Log.d("CartDebug", "Selected Size: $selectedSize, Selected Color: $selectedColor")
+
+        // Kiểm tra xem người dùng đã chọn kích thước và màu chưa
+        if (selectedSize == null || selectedColor == null) {
+            Toast.makeText(requireContext(), "Vui lòng chọn size và màu.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Tạo ID duy nhất cho mục giỏ hàng
+        val cartItemId = "${product.productId}_${selectedSize}_${selectedColor}"
+
+        // Tham chiếu tới mục giỏ hàng trong Firestore
+        val cartRef = firestore.collection("carts").document(userId)
+            .collection("cartItems").document(cartItemId)
 
         cartRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
+                // Nếu mục giỏ hàng đã tồn tại, tăng số lượng lên
                 val currentQuantity = document.getLong("quantity") ?: 1
                 cartRef.update("quantity", currentQuantity + 1)
             } else {
-                // Thêm sản phẩm mới vào giỏ hàng
+                // Nếu chưa có mục giỏ hàng, thêm mới với các trường đã chọn
                 val cartItem = hashMapOf(
                     "name" to product.name,
                     "price" to product.price,
                     "quantity" to 1,
-                    "imageUrl" to product.imageUrl
+                    "imageUrl" to product.imageUrl.firstOrNull().orEmpty(),
+                    "selectedSize" to selectedSize,   // Lưu kích thước đã chọn
+                    "selectedColor" to selectedColor  // Lưu màu sắc đã chọn
                 )
+
+                // Log để kiểm tra `cartItem` trước khi lưu vào Firestore
+                Log.d("CartDebug", "CartItem to Save: $cartItem")
+
+
+                // Lưu `cartItem` vào Firestore
                 cartRef.set(cartItem)
             }
+
+            // Hiển thị thông báo khi thêm vào giỏ hàng thành công
             Toast.makeText(requireContext(), "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show()
-            navigateToCart() // Điều hướng đến CartFragment sau khi thêm
+            navigateToCart()
         }.addOnFailureListener { e ->
+            // Xử lý lỗi trong trường hợp không thêm được sản phẩm
             Toast.makeText(requireContext(), "Có lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
-    private fun showError(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-    }
+
+
+
 
     private fun navigateToCart() {
         findNavController().navigate(R.id.action_productDetailsFragment_to_cartFragment)
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
 
