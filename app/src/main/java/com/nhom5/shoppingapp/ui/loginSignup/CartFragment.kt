@@ -52,53 +52,50 @@ class CartFragment : Fragment(), CartItemActionListener {
             .addOnSuccessListener { querySnapshot ->
                 cartItems = querySnapshot.documents.map { document ->
                     val id = document.id
-                    // Lấy imageUrl dưới dạng List<String>
-                    val imageUrls = document.get("imageUrl") as? List<String> ?: emptyList()
-                    // Sử dụng hình ảnh đầu tiên hoặc một hình ảnh mặc định
-                    val imageUrl = if (imageUrls.isNotEmpty()) imageUrls[0] else ""
+                    val name = document.getString("name") ?: ""
+                    val price = document.getDouble("price") ?: 0.0
+                    val quantity = document.getLong("quantity")?.toInt() ?: 1
+                    val imageUrl = document.getString("imageUrl") ?: ""
+                    val selectedColor = document.getString("selectedColor") ?: ""
+                    val selectedSize = document.getString("selectedSize") ?: ""
 
+                    // Gán dữ liệu vào model `CartItem`
                     CartItem(
                         id = id,
-                        name = document.getString("name") ?: "",
-                        price = document.getDouble("price") ?: 0.0,
-                        quantity = document.getLong("quantity")?.toInt() ?: 1,
-                        imageUrl = imageUrl
+                        name = name,
+                        price = price,
+                        quantity = quantity,
+                        imageUrl = imageUrl,
+                        selectedColor = selectedColor,  // Lưu color đã chọn
+                        selectedSize = selectedSize     // Lưu size đã chọn
                     )
                 }.toMutableList()
 
                 if (cartItems.isNotEmpty()) {
                     binding.cartEmptyTextView.visibility = View.GONE
-                    cartAdapter.updateCartItems(cartItems) // Cập nhật dữ liệu giỏ hàng trong adapter
-                    updateSummaryInfo() // Cập nhật thông tin tổng tiền
+                    cartAdapter.updateCartItems(cartItems)
+                    updateSummaryInfo()
                 } else {
                     binding.cartEmptyTextView.visibility = View.VISIBLE
                 }
 
-                hideLoader() // Ẩn loader sau khi tải dữ liệu thành công
+                hideLoader()
             }
             .addOnFailureListener { e ->
-                hideLoader() // Ẩn loader khi có lỗi xảy ra
+                hideLoader()
                 showError("Có lỗi xảy ra khi lấy giỏ hàng: ${e.message}")
             }
     }
-
 
     private fun updateSummaryInfo() {
         // Tính tổng tiền sản phẩm (Items)
         val totalItemsPrice = cartItems.sumOf { it.price * it.quantity }
 
-        // Shipping và Import Charges
-        val shipping: Double
-        val importCharges: Double
+        // Tính Import Charges dựa trên 10% của tổng đơn giá
+        val importCharges = totalItemsPrice * 0.1
 
-        // Kiểm tra nếu giỏ hàng trống
-        if (cartItems.isEmpty()) {
-            shipping = 0.0
-            importCharges = 0.0
-        } else {
-            shipping = 30.0 // Phí ship mặc định
-            importCharges = 30.0 // Phí phát sinh mặc định
-        }
+        // Đặt phí ship cố định
+        val shipping = if (cartItems.isNotEmpty()) 30.0 else 0.0
 
         // Tính tổng tiền cuối cùng (Total Price)
         val totalPrice = totalItemsPrice + shipping + importCharges
@@ -111,7 +108,6 @@ class CartFragment : Fragment(), CartItemActionListener {
     }
 
 
-
     override fun onDelete(cartItem: CartItem) {
         val userId = currentUser?.uid ?: return
         val cartItemRef = firestore.collection("carts").document(userId).collection("cartItems").document(cartItem.id)
@@ -119,11 +115,8 @@ class CartFragment : Fragment(), CartItemActionListener {
         cartItemRef.delete()
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Đã xóa sản phẩm khỏi giỏ hàng", Toast.LENGTH_SHORT).show()
-                // Xóa sản phẩm khỏi danh sách và cập nhật adapter
                 cartItems.remove(cartItem)
                 cartAdapter.updateCartItems(cartItems)
-
-                // Cập nhật tổng tiền sau khi xóa
                 updateSummaryInfo()
             }
             .addOnFailureListener { e ->
@@ -139,12 +132,11 @@ class CartFragment : Fragment(), CartItemActionListener {
 
         cartItemRef.update("quantity", newQuantity)
             .addOnSuccessListener {
-                // Cập nhật số lượng trong danh sách và adapter
                 val index = cartItems.indexOfFirst { it.id == cartItem.id }
                 if (index != -1) {
                     cartItems[index] = cartItem.copy(quantity = newQuantity)
                     cartAdapter.updateCartItems(cartItems)
-                    updateSummaryInfo() // Cập nhật tổng tiền sau khi tăng số lượng
+                    updateSummaryInfo()
                 }
             }
             .addOnFailureListener { e ->
@@ -161,12 +153,11 @@ class CartFragment : Fragment(), CartItemActionListener {
 
             cartItemRef.update("quantity", newQuantity)
                 .addOnSuccessListener {
-                    // Cập nhật số lượng trong danh sách và adapter
                     val index = cartItems.indexOfFirst { it.id == cartItem.id }
                     if (index != -1) {
                         cartItems[index] = cartItem.copy(quantity = newQuantity)
                         cartAdapter.updateCartItems(cartItems)
-                        updateSummaryInfo() // Cập nhật tổng tiền sau khi giảm số lượng
+                        updateSummaryInfo()
                     }
                 }
                 .addOnFailureListener { e ->
