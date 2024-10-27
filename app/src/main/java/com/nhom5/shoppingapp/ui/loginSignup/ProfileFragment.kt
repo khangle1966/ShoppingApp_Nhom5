@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nhom5.shoppingapp.databinding.FragmentProfileBinding
+import com.nhom5.shoppingapp.model.User
 
 class ProfileFragment : Fragment() {
 
@@ -27,7 +28,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -62,17 +63,13 @@ class ProfileFragment : Fragment() {
             db.collection("users").document(user.uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        Log.d("ProfileFragment", "Document data: ${document.data}")
-
-                        // Lấy thông tin từ tài liệu Firestore
-                        val name = document.getString("name") ?: ""
-                        val mobile = document.getString("mobile") ?: ""
-                        val address = document.getString("address") ?: ""
-
-                        // Gán dữ liệu vào các trường EditText
-                        binding.profileName.setText(name)
-                        binding.profilePhone.setText(mobile)
-                        binding.profileAddress.setText(address)
+                        // Ánh xạ tài liệu từ Firestore thành đối tượng User
+                        val userData = document.toObject(User::class.java)
+                        userData?.let {
+                            binding.profileName.setText(it.name)
+                            binding.profilePhone.setText(it.mobile)
+                            binding.profileAddress.setText(it.address)
+                        }
                     } else {
                         Log.d("ProfileFragment", "No such document")
                         Toast.makeText(requireContext(), "Không tìm thấy dữ liệu người dùng!", Toast.LENGTH_SHORT).show()
@@ -119,12 +116,8 @@ class ProfileFragment : Fragment() {
                 return
             }
 
-            val userData = hashMapOf(
-                "name" to name,
-                "mobile" to mobile,
-                "address" to address,
-                "email" to email
-            )
+            // Sử dụng đối tượng User để lưu vào Firestore
+            val userData = User(uid = user.uid, name = name, mobile = mobile, address = address, email = email)
 
             // Lưu thông tin người dùng vào Firestore
             db.collection("users").document(user.uid).set(userData)

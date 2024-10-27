@@ -1,5 +1,6 @@
 package com.nhom5.shoppingapp.ui.home
 
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -18,8 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nhom5.shoppingapp.R
 import com.nhom5.shoppingapp.databinding.FragmentHomeBinding
 import com.nhom5.shoppingapp.model.Product
+import com.nhom5.shoppingapp.model.User
 import com.nhom5.shoppingapp.ui.adapters.ProductAdapter
-import androidx.navigation.fragment.findNavController
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -29,6 +31,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val fullProductList = mutableListOf<Product>()
     private val filteredProductList = mutableListOf<Product>()
     private val firestore = FirebaseFirestore.getInstance()
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,7 +52,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = productAdapter
         }
-
+        // Ẩn hoặc hiển thị nút thêm sản phẩm dựa vào userType
+        checkUserType()
         // FloatingActionButton để thêm sản phẩm
         val fab: FloatingActionButton = binding.homeFabAddProduct
         fab.setOnClickListener {
@@ -79,7 +83,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         loadProducts()
     }
 
+    // Kiểm tra userType và ẩn FAB nếu người dùng là "customer"
+    private fun checkUserType() {
+        if (currentUser != null) {
+            firestore.collection("users").document(currentUser.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    val user = document.toObject(User::class.java)
+                    if (user?.userType == "admin") {
+                        // Ẩn FloatingActionButton nếu userType là customer
+                        binding.homeFabAddProduct.visibility = View.VISIBLE
 
+                    } else {
+                        // Hiển thị FloatingActionButton nếu userType không phải là customer
+                        binding.homeFabAddProduct.visibility = View.GONE
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Lỗi khi tải thông tin người dùng: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
     private fun showSortMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)

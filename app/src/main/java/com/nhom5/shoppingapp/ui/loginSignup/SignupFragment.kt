@@ -89,11 +89,12 @@ class SignupFragment : Fragment() {
 
                     // Tạo đối tượng User
                     val user = User(
-                        UID = userId.toString(),
-                        Mobile = mobile,  // Tạm thời, sẽ cập nhật sau
-                        Address = "",  // Tạm thời, sẽ cập nhật sau
-                        Name = name,  // Lấy tên từ EditText
-                        Email = userEmail.toString()
+                        uid = userId.toString(),
+                        mobile = mobile,  // Tạm thời, sẽ cập nhật sau
+                        address = "",  // Tạm thời, sẽ cập nhật sau
+                        name = name,  // Lấy tên từ EditText
+                        email = userEmail.toString()
+
                     )
 
                     // Lưu đối tượng User vào Firebase Firestore

@@ -18,20 +18,19 @@
             android:id="@+id/action_homeFragment_to_productDetailsFragment"
             app:destination="@id/productDetailsFragment"
             app:argType="string" />
+        <action
+            android:id="@+id/action_homeFragment_to_addProductFragment"
+            app:destination="@id/addProductFragment" />
     </fragment>
 
-
+    <!-- ProfileFragment -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.nhom5.shoppingapp.ui.loginSignup.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <action
-        android:id="@+id/action_accountFragment_to_profileFragment"
-        app:destination="@id/profileFragment" />
 
-
-
+    <!-- ProductDetailsFragment -->
     <fragment
         android:id="@+id/productDetailsFragment"
         android:name="com.nhom5.shoppingapp.ui.productdetails.ProductDetailsFragment"
@@ -49,6 +48,7 @@
             android:id="@+id/action_productDetailsFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
     </fragment>
+
     <!-- AccountFragment -->
     <fragment
         android:id="@+id/accountFragment"
@@ -56,10 +56,41 @@
         android:label="fragment_account"
         tools:layout="@layout/fragment_account">
         <action
+            android:id="@+id/action_accountFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
             android:id="@+id/action_accountFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
-    </fragment>
+        <!-- New action to navigate from AccountFragment to OrdersFragment -->
+        <action
+            android:id="@+id/action_accountFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_adminFragment"
+            app:destination="@id/adminFragment" />
 
+    </fragment>
+    <!-- AdminFragment -->
+
+    <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.nhom5.shoppingapp.ui.admin.AdminFragment"
+        android:label="Admin Panel"
+        tools:layout="@layout/fragment_admin">
+        <action
+            android:id="@+id/action_adminFragment_to_editProductFragment"
+            app:destination="@id/editProductFragment"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProductFragment"
+        android:name="com.nhom5.shoppingapp.ui.admin.EditProductFragment"
+        android:label="Edit Product"
+        tools:layout="@layout/fragment_edit_product">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+    </fragment>
     <!-- LoginFragment -->
     <fragment
         android:id="@+id/loginFragment"
@@ -67,34 +98,115 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <action
-        android:id="@+id/action_signupFragment_to_loginFragment"
-        app:destination="@id/loginFragment" />
+        android:id="@+id/action_loginFragment_to_signupFragment"
+        app:destination="@id/signupFragment" />
 
-    <!-- Add other fragments here if necessary -->
-
+    <!-- SignupFragment -->
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.nhom5.shoppingapp.ui.loginSignup.SignupFragment"
         android:label="fragment_signup"
         tools:layout="@layout/fragment_signup" />
-
     <action
-        android:id="@+id/action_loginFragment_to_signupFragment"
-        app:destination="@id/signupFragment" />
+        android:id="@+id/action_signupFragment_to_loginFragment"
+        app:destination="@id/loginFragment" />
 
+    <!-- AddProductFragment -->
     <fragment
         android:id="@+id/addProductFragment"
         android:name="com.nhom5.shoppingapp.ui.product.AddProductFragment"
         android:label="Add Product"
         tools:layout="@layout/fragment_add_product" />
 
-    <action
-        android:id="@+id/action_homeFragment_to_addProductFragment"
-        app:destination="@id/addProductFragment" />
-
-
+    <!-- CartFragment -->
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.nhom5.shoppingapp.ui.cart.CartFragment"
-        android:label="Cart" />
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_addressSelectionFragment"
+            app:destination="@id/addressSelectionFragment">
+            <argument
+                android:name="totalPrice"
+                app:argType="float" />
+        </action>
+    </fragment>
+
+    <!-- AddressSelectionFragment -->
+    <fragment
+        android:id="@+id/addressSelectionFragment"
+        android:name="com.nhom5.shoppingapp.ui.address.AddressSelectionFragment"
+        android:label="Address Selection"
+        tools:layout="@layout/fragment_address">
+        <action
+            android:id="@+id/action_addressSelectionFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_addressSelectionFragment_to_selectPaymentFragment"
+            app:destination="@id/selectPaymentFragment">
+            <argument
+                android:name="selectedAddress"
+                app:argType="string" />
+            <argument
+                android:name="totalPrice"
+                app:argType="float" />
+        </action>
+    </fragment>
+
+    <!-- SelectPaymentFragment -->
+    <fragment
+        android:id="@+id/selectPaymentFragment"
+        android:name="com.nhom5.shoppingapp.ui.payment.SelectPaymentFragment"
+        android:label="Select Payment"
+        tools:layout="@layout/fragment_select_payment">
+        <action
+            android:id="@+id/action_selectPaymentFragment_to_orderSuccessFragment"
+            app:destination="@id/orderSuccessFragment">
+            <argument
+                android:name="selectedAddress"
+                app:argType="string" />
+            <argument
+                android:name="paymentMethod"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- OrderSuccessFragment -->
+    <fragment
+        android:id="@+id/orderSuccessFragment"
+        android:name="com.nhom5.shoppingapp.ui.order.OrderSuccessFragment"
+        android:label="Order Success"
+        tools:layout="@layout/fragment_order_success" />
+    <action
+        android:id="@+id/action_orderSuccessFragment_to_homeFragment"
+        app:destination="@id/homeFragment" />
+
+    <!-- OrdersFragment -->
+    <fragment
+        android:id="@+id/ordersFragment"
+
+        android:name="com.nhom5.shoppingapp.ui.orders.OrdersFragment"
+        android:label="Orders"
+        tools:layout="@layout/fragment_orders">
+        <!-- New action to navigate to OrderDetailsFragment -->
+        <action
+            android:id="@+id/action_ordersFragment_to_orderDetailsFragment"
+            app:destination="@id/orderDetailsFragment">
+            <argument
+                android:name="orderId"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- OrderDetailsFragment -->
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="com.nhom5.shoppingapp.ui.orders.OrderDetailsFragment"
+        android:label="Order Details"
+        tools:layout="@layout/fragment_order_details">
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+    </fragment>
 </navigation>

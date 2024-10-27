@@ -68,7 +68,9 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/home_add_fab_desc"
-        app:srcCompat="@drawable/ic_add_48" />
+        app:srcCompat="@drawable/ic_add_48"
+        android:visibility="gone" />
+
 
 
 </RelativeLayout>

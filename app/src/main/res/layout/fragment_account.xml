@@ -60,8 +60,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/account_profile_tv" />
 
-
-
+        <!-- Thêm nút Admin -->
+        <TextView
+            android:id="@+id/account_admin_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:padding="16dp"
+            android:text="Admin"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_outlined_person_24"
+            app:drawableTint="@color/blue_accent_300"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/account_orders_tv" />
 
         <TextView
             android:id="@+id/account_sign_out_tv"
@@ -82,6 +102,6 @@
             app:drawableTint="@color/blue_accent_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/account_orders_tv" />
+            app:layout_constraintTop_toBottomOf="@id/account_admin_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nhom5.shoppingapp.databinding.FragmentCartBinding
 import com.nhom5.shoppingapp.model.CartItem
+import androidx.navigation.fragment.findNavController
+import com.nhom5.shoppingapp.R
 
 class CartFragment : Fragment(), CartItemActionListener {
 
@@ -19,6 +21,7 @@ class CartFragment : Fragment(), CartItemActionListener {
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private lateinit var cartAdapter: CartAdapter
     private var cartItems = mutableListOf<CartItem>()
+    private var totalPrice: Float = 0f
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +44,10 @@ class CartFragment : Fragment(), CartItemActionListener {
         } else {
             showError("Người dùng không hợp lệ.")
         }
+
+        binding.cartCheckOutBtn.setOnClickListener {
+            onCheckOutButtonClick()
+        }
     }
 
     private fun loadCartItems(userId: String) {
@@ -59,15 +66,14 @@ class CartFragment : Fragment(), CartItemActionListener {
                     val selectedColor = document.getString("selectedColor") ?: ""
                     val selectedSize = document.getString("selectedSize") ?: ""
 
-                    // Gán dữ liệu vào model `CartItem`
                     CartItem(
                         id = id,
                         name = name,
                         price = price,
                         quantity = quantity,
                         imageUrl = imageUrl,
-                        selectedColor = selectedColor,  // Lưu color đã chọn
-                        selectedSize = selectedSize     // Lưu size đã chọn
+                        selectedColor = selectedColor,
+                        selectedSize = selectedSize
                     )
                 }.toMutableList()
 
@@ -88,25 +94,16 @@ class CartFragment : Fragment(), CartItemActionListener {
     }
 
     private fun updateSummaryInfo() {
-        // Tính tổng tiền sản phẩm (Items)
         val totalItemsPrice = cartItems.sumOf { it.price * it.quantity }
-
-        // Tính Import Charges dựa trên 10% của tổng đơn giá
         val importCharges = totalItemsPrice * 0.1
-
-        // Đặt phí ship cố định
         val shipping = if (cartItems.isNotEmpty()) 30.0 else 0.0
+        totalPrice = (totalItemsPrice + shipping + importCharges).toFloat()
 
-        // Tính tổng tiền cuối cùng (Total Price)
-        val totalPrice = totalItemsPrice + shipping + importCharges
-
-        // Cập nhật các TextView trong giao diện
         binding.itemsPrice.text = "$%.2f".format(totalItemsPrice)
         binding.shippingPrice.text = "$%.2f".format(shipping)
         binding.importChargesPrice.text = "$%.2f".format(importCharges)
         binding.totalPrice.text = "$%.2f".format(totalPrice)
     }
-
 
     override fun onDelete(cartItem: CartItem) {
         val userId = currentUser?.uid ?: return
@@ -122,6 +119,11 @@ class CartFragment : Fragment(), CartItemActionListener {
             .addOnFailureListener { e ->
                 showError("Không thể xóa sản phẩm: ${e.message}")
             }
+    }
+
+    private fun onCheckOutButtonClick() {
+        val action = CartFragmentDirections.actionCartFragmentToAddressSelectionFragment(totalPrice)
+        findNavController().navigate(action)
     }
 
     override fun onIncrement(cartItem: CartItem) {
