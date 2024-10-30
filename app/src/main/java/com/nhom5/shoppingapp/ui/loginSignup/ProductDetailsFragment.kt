@@ -37,7 +37,9 @@ class ProductDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         productViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
-
+        binding.addProAppBar.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         val productId = arguments?.getString("productId")
         if (productId != null) {
             loadProductDetails(productId)

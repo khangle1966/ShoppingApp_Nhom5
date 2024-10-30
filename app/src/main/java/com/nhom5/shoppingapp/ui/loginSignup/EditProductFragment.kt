@@ -5,7 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
     private val storage = FirebaseStorage.getInstance()
     private var productId: String? = null
     private var selectedImageUri: Uri? = null
+    private val imageUrls = mutableListOf<String>()  // Lưu URL của các ảnh đã chọn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,26 +40,31 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
             loadProductData(productId!!)
         }
 
-        // Xử lý chọn hình ảnh từ bộ nhớ
         val imagePicker =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                     selectedImageUri = result.data?.data
-                    Glide.with(this)
-                        .load(selectedImageUri)
-                        .into(binding.selectedImageView)
-                    binding.selectedImageView.visibility = View.VISIBLE
+                    selectedImageUri?.let { uri ->
+                        // Hiển thị hình ảnh đã chọn
+                        addImageToContainer(uri.toString())
+                    }
                 }
             }
 
         binding.selectImageBtn.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            imagePicker.launch(intent)
+            if (imageUrls.size < 3) {  // Giới hạn chỉ cho phép chọn tối đa 3 hình ảnh
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                imagePicker.launch(intent)
+            } else {
+                Toast.makeText(requireContext(), "Chỉ được thêm tối đa 3 ảnh", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.saveProductBtn.setOnClickListener {
-            saveProductChanges()
+            uploadImageToFirebaseStorage { updatedImageUrls ->
+                saveProductChanges(updatedImageUrls)  // Truyền URL ảnh vào hàm lưu sản phẩm
+            }
         }
     }
 
@@ -75,49 +82,81 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
 
                     // Load hình ảnh
                     if (it.imageUrl.isNotEmpty()) {
-                        Glide.with(this)
-                            .load(it.imageUrl[0])  // Lấy ảnh đầu tiên làm đại diện
-                            .into(binding.selectedImageView)
-                        binding.selectedImageView.visibility = View.VISIBLE
+                        imageUrls.addAll(it.imageUrl)  // Thêm các URL ảnh vào danh sách
+
+                        // Xóa tất cả các ImageView cũ nếu có
+                        binding.imageContainer.removeAllViews()
+
+                        // Tạo và thêm ImageView động vào LinearLayout
+                        imageUrls.forEach { url ->
+                            addImageToContainer(url)
+                        }
                     }
 
-                    // Chọn màu từ Firebase và hiển thị màu đã chọn
                     setColorSelections(it.color)
-
-                    // Chọn size đã lưu
                     setSizeSelections(it.size)
                 }
             }
     }
 
+    private fun addImageToContainer(imageUrl: String) {
+        // Tạo ImageView mới
+        val imageView = ImageView(requireContext())
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        layoutParams.setMargins(16, 0, 16, 0)  // Tạo khoảng cách giữa các ảnh
+        imageView.layoutParams = layoutParams
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        imageView.adjustViewBounds = true
+        imageView.layoutParams.width = 200  // Đặt kích thước cho các hình ảnh
+        imageView.layoutParams.height = 200
+
+        // Sử dụng Glide để tải ảnh
+        Glide.with(this)
+            .load(imageUrl)
+            .into(imageView)
+
+        // Xử lý sự kiện nhấn giữ để xóa ảnh
+        imageView.setOnLongClickListener {
+            // Hiển thị một thông báo xác nhận xóa ảnh
+            Toast.makeText(requireContext(), "Xóa ảnh này", Toast.LENGTH_SHORT).show()
+
+            // Xóa ảnh khỏi danh sách và LinearLayout
+            binding.imageContainer.removeView(imageView)  // Xóa ImageView khỏi LinearLayout
+            imageUrls.remove(imageUrl)  // Xóa URL ảnh khỏi danh sách
+
+            true  // Trả về true để đánh dấu sự kiện đã được xử lý
+        }
+
+        // Thêm ImageView vào LinearLayout
+        binding.imageContainer.addView(imageView)
+    }
+
     private fun setColorSelections(selectedColors: List<String>) {
-        // Kiểm tra màu đã chọn và đánh dấu vào checkbox tương ứng
         binding.colorBlack.isChecked = selectedColors.contains("Black")
         binding.colorWhite.isChecked = selectedColors.contains("White")
         binding.colorRed.isChecked = selectedColors.contains("Red")
         binding.colorChipGreen.isChecked = selectedColors.contains("Green")
         binding.colorBlue.isChecked = selectedColors.contains("Blue")
         binding.goldColor.isChecked = selectedColors.contains("Yellow")
-
-
     }
 
     private fun setSizeSelections(selectedSizes: List<String>) {
-        // Kiểm tra size đã chọn và đánh dấu vào ToggleButton tương ứng
         binding.sizeS.isChecked = selectedSizes.contains("S")
         binding.sizeM.isChecked = selectedSizes.contains("M")
         binding.sizeL.isChecked = selectedSizes.contains("L")
         binding.sizeXl.isChecked = selectedSizes.contains("XL")
     }
 
-    private fun saveProductChanges() {
+    private fun saveProductChanges(updatedImageUrls: List<String>) {
         val name = binding.productNameEt.text.toString()
         val price = binding.productPriceEt.text.toString().toDouble()
         val actualPrice = binding.productActualPriceEt.text.toString().toDouble()
         val offerPercentage = binding.productOfferPercentageEt.text.toString()
         val specifications = binding.productSpecificationsEt.text.toString()
 
-        // Lấy danh sách màu được chọn
         val colors = mutableListOf<String>()
         if (binding.colorBlack.isChecked) colors.add("Black")
         if (binding.colorWhite.isChecked) colors.add("White")
@@ -126,16 +165,13 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
         if (binding.colorBlue.isChecked) colors.add("Blue")
         if (binding.goldColor.isChecked) colors.add("Yellow")
 
-
-        // Lấy danh sách size được chọn
         val sizes = mutableListOf<String>()
         if (binding.sizeS.isChecked) sizes.add("S")
         if (binding.sizeM.isChecked) sizes.add("M")
         if (binding.sizeL.isChecked) sizes.add("L")
         if (binding.sizeXl.isChecked) sizes.add("XL")
 
-        // Tạo bản cập nhật sản phẩm
-        val productUpdates = mapOf(
+        val productUpdates = mutableMapOf<String, Any>(
             "name" to name,
             "price" to price,
             "actualPrice" to actualPrice,
@@ -145,17 +181,38 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
             "size" to sizes
         )
 
+        if (imageUrls.isNotEmpty()) {
+            productUpdates["imageUrl"] = imageUrls  // Cập nhật danh sách URL ảnh
+        }
+
         productId?.let {
             firestore.collection("products").document(it)
                 .update(productUpdates)
                 .addOnSuccessListener {
-                     Toast.makeText(requireContext(), "Product updated successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Product updated successfully", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
                     Toast.makeText(requireContext(), "Failed to update product", Toast.LENGTH_SHORT).show()
                 }
         }
     }
+
+    private fun uploadImageToFirebaseStorage(callback: (List<String>) -> Unit) {
+        selectedImageUri?.let { uri ->
+            val storageRef = storage.reference.child("product_images/${System.currentTimeMillis()}.jpg")
+            storageRef.putFile(uri)
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        imageUrls.add(uri.toString())  // Thêm URL ảnh vào danh sách
+                        callback(imageUrls.take(3))  // Trả về tối đa 3 URL ảnh
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to upload image", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+}
 
 //
 //    private fun getSelectedColors(): List<String> {
@@ -208,4 +265,4 @@ class EditProductFragment : Fragment(R.layout.fragment_edit_product) {
 //                }
 //        }
 //    }
-}
+
