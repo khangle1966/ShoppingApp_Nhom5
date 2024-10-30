@@ -70,6 +70,7 @@ class SelectPaymentFragment : Fragment() {
             val userId = user.uid
             val orderId = firestore.collection("orders").document().id // Tạo ID đơn hàng tự động
 
+            // Lấy danh sách sản phẩm trong giỏ hàng
             firestore.collection("carts").document(userId).collection("cartItems").get()
                 .addOnSuccessListener { querySnapshot ->
                     val cartItems = querySnapshot.documents.map { document ->
@@ -102,6 +103,10 @@ class SelectPaymentFragment : Fragment() {
                     // Lưu đơn hàng vào Firestore
                     firestore.collection("orders").document(orderId).set(order)
                         .addOnSuccessListener {
+                            // Xóa chỉ các sản phẩm đã mua từ giỏ hàng
+                            clearPurchasedCartItems(userId, cartItems)
+
+                            // Điều hướng tới OrderSuccessFragment
                             findNavController().navigate(R.id.action_selectPaymentFragment_to_orderSuccessFragment)
                         }
                         .addOnFailureListener { e ->
@@ -113,4 +118,20 @@ class SelectPaymentFragment : Fragment() {
                 }
         }
     }
+
+    private fun clearPurchasedCartItems(userId: String, purchasedItems: List<CartItem>) {
+        val cartItemsRef = firestore.collection("carts").document(userId).collection("cartItems")
+
+        for (item in purchasedItems) {
+            // Xóa từng sản phẩm đã mua từ giỏ hàng
+            cartItemsRef.document(item.id).delete()
+                .addOnSuccessListener {
+                    // Bạn có thể thêm log hoặc thông báo ở đây nếu cần thiết
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Không thể xóa sản phẩm: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
 }
