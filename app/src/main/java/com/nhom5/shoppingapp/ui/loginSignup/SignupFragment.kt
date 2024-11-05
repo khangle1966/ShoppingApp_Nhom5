@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController // Import NavController
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.nhom5.shoppingapp.R // Import R
-import com.nhom5.shoppingapp.databinding.FragmentSignupBinding
 import com.google.firebase.firestore.FirebaseFirestore
-import com.nhom5.shoppingapp.model.User // Đảm bảo đường dẫn này đúng với nơi bạn lưu trữ lớp User
+import com.nhom5.shoppingapp.R
+import com.nhom5.shoppingapp.databinding.FragmentSignupBinding
+import com.nhom5.shoppingapp.model.User
 
 class SignupFragment : Fragment() {
 
@@ -35,8 +35,9 @@ class SignupFragment : Fragment() {
             val email = binding.signupEmailEditText.text.toString()
             val password = binding.signupPasswordEditText.text.toString()
             val confirmPassword = binding.signupCnfPasswordEditText.text.toString()
+            val mobile = binding.signupMobileEditText.text.toString()
 
-            if (kiemTraThongTin(name, email, password, confirmPassword)) {
+            if (kiemTraThongTin(name, email, password, confirmPassword, mobile)) {
                 dangKyTaiKhoan(email, password)
             }
         }
@@ -53,7 +54,8 @@ class SignupFragment : Fragment() {
         name: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        mobile: String
     ): Boolean {
         return when {
             name.isEmpty() -> {
@@ -62,6 +64,10 @@ class SignupFragment : Fragment() {
             }
             email.isEmpty() -> {
                 hienThiLoi("Vui lòng nhập email")
+                false
+            }
+            mobile.isEmpty() -> {
+                hienThiLoi("Vui lòng nhập số điện thoại")
                 false
             }
             password.isEmpty() -> {
@@ -80,53 +86,41 @@ class SignupFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Đăng ký thành công, lấy thông tin người dùng
                     val firebaseUser = auth.currentUser
                     val userId = firebaseUser?.uid
                     val userEmail = firebaseUser?.email
                     val name = binding.signupNameEditText.text.toString()
                     val mobile = binding.signupMobileEditText.text.toString()
 
-                    // Tạo đối tượng User
                     val user = User(
                         uid = userId.toString(),
-                        mobile = mobile,  // Tạm thời, sẽ cập nhật sau
-                        address = "",  // Tạm thời, sẽ cập nhật sau
-                        name = name,  // Lấy tên từ EditText
+                        mobile = mobile,
+                        address = "",  // Không có địa chỉ mặc định
+                        name = name,
                         email = userEmail.toString()
-
                     )
 
-                    // Lưu đối tượng User vào Firebase Firestore
                     val db = FirebaseFirestore.getInstance()
                     userId?.let {
                         db.collection("users").document(it).set(user)
                             .addOnCompleteListener { dbTask ->
                                 if (dbTask.isSuccessful) {
-                                    // Lưu dữ liệu thành công
                                     Toast.makeText(context, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                                    findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
                                 } else {
-                                    // Xử lý lỗi khi lưu dữ liệu
                                     Toast.makeText(context, "Không thể lưu dữ liệu người dùng: ${dbTask.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
                             }
                     }
                 } else {
-                    // Xử lý lỗi đăng ký
                     Toast.makeText(context, "Đăng ký thất bại: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-
-
     private fun hienThiLoi(message: String) {
         binding.signupErrorTextView.text = message
         binding.signupErrorTextView.visibility = View.VISIBLE
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

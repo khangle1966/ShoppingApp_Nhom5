@@ -151,6 +151,12 @@
             <argument
                 android:name="totalPrice"
                 app:argType="float" />
+            <argument
+                android:name="customName"
+                app:argType="string" />
+            <argument
+                android:name="customPhone"
+                app:argType="string" />
         </action>
     </fragment>
 

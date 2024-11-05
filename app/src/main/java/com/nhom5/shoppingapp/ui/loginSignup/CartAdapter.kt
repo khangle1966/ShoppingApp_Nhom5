@@ -42,8 +42,12 @@ class CartAdapter(
     inner class CartViewHolder(private val binding: CartListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cartItem: CartItem) {
             binding.cartProductTitleTv.text = cartItem.name
-            binding.cartProductPriceTv.text = "Unit Price: $${cartItem.price}"  // Thêm "Unit Price: " trước giá
+            binding.cartProductPriceTv.text = "Unit Price: $${cartItem.price}" // Thêm "Unit Price: " trước giá
             binding.cartProductQuantityTextView.text = cartItem.quantity.toString()
+
+            // Tính toán và hiển thị Amount
+            val amount = cartItem.price * cartItem.quantity
+            binding.cartProductAmountTv.text = "Amount: $%.2f".format(amount)
 
             // Hiển thị size đã chọn
             if (cartItem.selectedSize.isNotEmpty()) {
@@ -78,6 +82,7 @@ class CartAdapter(
             }
         }
     }
+
 
 }
 

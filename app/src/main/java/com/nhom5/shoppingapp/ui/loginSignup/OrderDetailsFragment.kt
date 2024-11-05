@@ -59,11 +59,12 @@ class OrderDetailsFragment : Fragment() {
 
                     // Hiển thị các chi tiết của đơn hàng
                     binding.orderDetailsPaymentLayout.priceItemsLabelTv.text = "Items (${it.items.size})"
-                    binding.orderDetailsPaymentLayout.priceTotalAmountTv.text = "$${it.totalPrice}"
+                    binding.orderDetailsPaymentLayout.priceTotalAmountTv.text = "$${String.format("%.2f", it.totalPrice)}"
                     binding.orderDetailsShippingAddLayout.purchaseDateValue.text = "${it.orderDate}"
                     binding.orderDetailsShippingAddLayout.shipAddValueTv.text = it.shippingAddress
                     binding.orderDetailsShippingAddLayout.shipCurrStatusValueTv.text = it.status
-
+                    binding.orderDetailsShippingAddLayout.customerNameValueTv.text = it.customName ?: "N/A"
+                    binding.orderDetailsShippingAddLayout.customerPhoneValueTv.text = it.customPhone ?: "N/A"
                     orderDetailsAdapter.updateItems(it.items)
 
                     hideLoader()

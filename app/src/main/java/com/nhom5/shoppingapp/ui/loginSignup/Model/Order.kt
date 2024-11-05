@@ -7,7 +7,8 @@ data class Order(
     var totalPrice: Double = 0.0,
     var shippingAddress: String = "",
     val paymentMethod: String = "",
-    var status: String = "Pending" ,
-    val orderDate: String = "" // Có thể sử dụng SimpleDateFormat để định dạng ngày
-
+    var status: String = "Pending",
+    val orderDate: String = "",
+    val customName: String? = null,
+    val customPhone: String? = null
 )

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Nhập tên -->
+    <EditText
+        android:id="@+id/edit_person_name_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Name"
+        android:textSize="16sp" />
+
+    <!-- Nhập số điện thoại -->
+    <EditText
+        android:id="@+id/edit_mobile_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Enter Mobile Number"
+        android:inputType="phone"
+        android:textSize="16sp" />
+
+    <!-- Nhập địa chỉ -->
+    <EditText
+        android:id="@+id/edit_address_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Enter Address"
+        android:minLines="2"
+        android:textSize="16sp" />
+
+</LinearLayout>

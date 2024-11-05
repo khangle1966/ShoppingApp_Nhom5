@@ -6,7 +6,6 @@ data class User(
     var address: String = "",
     var name: String = "",
     var email: String = "",
-    var userType: String = "customer"
-
-
+    var userType: String = "customer",
+    var addresses: MutableList<Address> = mutableListOf()
 )

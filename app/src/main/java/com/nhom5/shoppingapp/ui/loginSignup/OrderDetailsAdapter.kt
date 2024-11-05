@@ -33,7 +33,7 @@ class OrderDetailsAdapter(
         fun bind(item: CartItem) {
 
             binding.cartProductTitleTv.text = item.name
-            binding.cartProductPriceTv.text = "$${item.price}"
+            binding.cartProductPriceTv.text = "$${String.format("%.2f", item.price)}" // Định dạng lại số tiền
             Glide.with(binding.root.context)
                 .load(item.imageUrl)
                 .into(binding.productImageView)

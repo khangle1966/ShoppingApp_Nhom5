@@ -45,6 +45,9 @@ class CartFragment : Fragment(), CartItemActionListener {
             showError("Người dùng không hợp lệ.")
         }
 
+        // Vô hiệu hóa nút Checkout ban đầu
+        binding.cartCheckOutBtn.isEnabled = false
+
         binding.cartCheckOutBtn.setOnClickListener {
             onCheckOutButtonClick()
         }
@@ -79,10 +82,12 @@ class CartFragment : Fragment(), CartItemActionListener {
 
                 if (cartItems.isNotEmpty()) {
                     binding.cartEmptyTextView.visibility = View.GONE
+                    binding.cartCheckOutBtn.isEnabled = true // Bật nút Checkout nếu có item
                     cartAdapter.updateCartItems(cartItems)
                     updateSummaryInfo()
                 } else {
                     binding.cartEmptyTextView.visibility = View.VISIBLE
+                    binding.cartCheckOutBtn.isEnabled = false // Vô hiệu hóa nút Checkout nếu giỏ hàng trống
                 }
 
                 hideLoader()
@@ -115,6 +120,8 @@ class CartFragment : Fragment(), CartItemActionListener {
                 cartItems.remove(cartItem)
                 cartAdapter.updateCartItems(cartItems)
                 updateSummaryInfo()
+                // Kiểm tra lại trạng thái nút Checkout
+                binding.cartCheckOutBtn.isEnabled = cartItems.isNotEmpty()
             }
             .addOnFailureListener { e ->
                 showError("Không thể xóa sản phẩm: ${e.message}")

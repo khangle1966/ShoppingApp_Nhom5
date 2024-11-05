@@ -34,7 +34,7 @@ class OrdersAdapter(
             binding.orderSummaryDateTv.text = order.orderDate.toString()
             binding.orderSummaryStatusValueTv.text = order.status
             binding.orderSummaryItemsCountTv.text = "${order.items.size} items purchased"
-            binding.orderSummaryTotalAmountTv.text = "$${order.totalPrice}"
+            binding.orderSummaryTotalAmountTv.text = "$${String.format("%.2f", order.totalPrice)}"
 
             // Khi người dùng nhấn vào đơn hàng
             binding.root.setOnClickListener {

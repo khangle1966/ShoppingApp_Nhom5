@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- Purchase Date Label and Value -->
         <TextView
             android:id="@+id/purchase_date_label_tv"
             android:layout_width="0dp"
@@ -38,6 +39,53 @@
             app:layout_constraintTop_toTopOf="@+id/purchase_date_label_tv"
             tools:text="December 01, 2022" />
 
+        <!-- Customer Name Label and Value -->
+        <TextView
+            android:id="@+id/customer_name_label_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Name"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/purchase_date_value" />
+
+        <TextView
+            android:id="@+id/customer_name_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/customer_name_label_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/customer_name_label_tv"
+            tools:text="John Doe" />
+
+        <!-- Customer Phone Label and Value -->
+        <TextView
+            android:id="@+id/customer_phone_label_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Phone"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customer_name_label_tv" />
+
+        <TextView
+            android:id="@+id/customer_phone_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/customer_phone_label_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/customer_phone_label_tv"
+            tools:text="+1234567890" />
+
+        <!-- Shipping Address Label and Value -->
         <TextView
             android:id="@+id/ship_add_label_tv"
             android:layout_width="0dp"
@@ -47,7 +95,7 @@
             android:textAppearance="@style/TextAppearance.MyTheme.Body1"
             android:textColor="@color/dark_gray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/purchase_date_label_tv" />
+            app:layout_constraintTop_toBottomOf="@id/customer_phone_label_tv" />
 
         <TextView
             android:id="@+id/ship_add_value_tv"
@@ -58,12 +106,11 @@
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/ship_add_label_tv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/ship_add_label_tv"
             app:layout_constraintTop_toTopOf="@+id/ship_add_label_tv"
-            app:layout_constraintVertical_bias="0.0"
             tools:text="123, Sonmwe Soijr, Ouiwy qwei, Uytwuf, India, 208242" />
 
+        <!-- Divider -->
         <ImageView
             android:id="@+id/card_dotted_divider"
             android:layout_width="match_parent"
@@ -76,6 +123,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ship_add_value_tv"
             app:srcCompat="@drawable/dotted_line_drawable" />
 
+        <!-- Shipping Status Label and Value -->
         <TextView
             android:id="@+id/ship_curr_status_label_tv"
             android:layout_width="0dp"
@@ -100,8 +148,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/ship_curr_status_label_tv"
             tools:text="DELIVERED ON January 01, 2023" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

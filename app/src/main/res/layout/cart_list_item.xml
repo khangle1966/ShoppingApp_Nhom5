@@ -15,7 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="155dp"
         android:layout_margin="8dp">
 
         <ImageView
@@ -78,7 +78,6 @@
             tools:text="Color: Red" />
 
 
-
         <ImageButton
             android:id="@+id/cart_product_like_btn"
             android:layout_width="wrap_content"
@@ -109,6 +108,21 @@
             app:tint="@color/gray" />
 
         <TextView
+            android:id="@+id/cart_product_amount_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="4dp"
+            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+            android:textColor="@color/blue_accent_300"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/cart_product_price_tv"
+            app:layout_constraintStart_toEndOf="@+id/product_image_view"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="Amount: $499.00" />
+
+        <TextView
             android:id="@+id/cart_product_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,14 +130,13 @@
             android:layout_marginBottom="8dp"
             android:textAppearance="@style/TextAppearance.MyTheme.Body1"
             android:textColor="@color/blue_accent_300"
+            android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toBottomOf="@+id/cart_product_color_tv"
             app:layout_constraintVertical_bias="1.0"
-            android:textSize="15sp"
             tools:text="Unit Price: $1234.56" />
-
 
         <LinearLayout
             android:id="@+id/cart_product_quantity_buttons_layout"

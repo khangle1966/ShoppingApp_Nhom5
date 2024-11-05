@@ -6,6 +6,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
+
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -73,10 +75,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
 
         // Xử lý sự kiện khi nhấn nút Sort
-        val sortButton: Button = view.findViewById(R.id.sortButton)
+        val sortButton: ImageButton = view.findViewById(R.id.sortButton)
         sortButton.setOnClickListener { view ->
             showSortMenu(view)
         }
+
 
         // Hiển thị loader và tải dữ liệu
         showLoader()

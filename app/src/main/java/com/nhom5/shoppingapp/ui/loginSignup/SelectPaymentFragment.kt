@@ -17,7 +17,8 @@ import androidx.navigation.fragment.findNavController
 import java.text.SimpleDateFormat
 import java.util.*
 class SelectPaymentFragment : Fragment() {
-
+    private var customName: String? = null
+    private var customPhone: String? = null
     private lateinit var binding: FragmentSelectPaymentBinding
     private lateinit var paymentAdapter: PaymentAdapter
     private val paymentMethods = listOf("Credit Card", "PayPal", "Cash on Delivery")
@@ -40,7 +41,8 @@ class SelectPaymentFragment : Fragment() {
         // Nhận selectedAddress và totalPrice từ AddressSelectionFragment
         selectedAddress = arguments?.getString("selectedAddress")
         totalPrice = arguments?.getFloat("totalPrice") ?: 0.0f
-
+        customName = arguments?.getString("customName")
+        customPhone = arguments?.getString("customPhone")
         setupRecyclerView()
 
         binding.payByNextBtn.text = "Thanh toán $totalPrice" // Hiển thị tổng tiền trên nút
@@ -68,9 +70,8 @@ class SelectPaymentFragment : Fragment() {
         val user = currentUser
         if (user != null) {
             val userId = user.uid
-            val orderId = firestore.collection("orders").document().id // Tạo ID đơn hàng tự động
+            val orderId = firestore.collection("orders").document().id
 
-            // Lấy danh sách sản phẩm trong giỏ hàng
             firestore.collection("carts").document(userId).collection("cartItems").get()
                 .addOnSuccessListener { querySnapshot ->
                     val cartItems = querySnapshot.documents.map { document ->
@@ -85,10 +86,9 @@ class SelectPaymentFragment : Fragment() {
                         )
                     }
 
-                    // Lấy ngày hiện tại và định dạng theo "dd MMMM yyyy"
                     val currentDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date())
 
-                    // Tạo đơn hàng mới với orderDate
+                    // Create the order with custom name and phone if available
                     val order = Order(
                         orderId = orderId,
                         userId = userId,
@@ -96,17 +96,15 @@ class SelectPaymentFragment : Fragment() {
                         totalPrice = totalPrice.toDouble(),
                         shippingAddress = selectedAddress ?: "No Address",
                         paymentMethod = selectedPayment,
-                        orderDate = currentDate, // Thêm ngày đặt hàng
-                        status = "Processing" // Trạng thái mặc định ban đầu
+                        orderDate = currentDate,
+                        status = "Processing",
+                        customName = customName,  // Use the custom name
+                        customPhone = customPhone // Use the custom phone
                     )
 
-                    // Lưu đơn hàng vào Firestore
                     firestore.collection("orders").document(orderId).set(order)
                         .addOnSuccessListener {
-                            // Xóa chỉ các sản phẩm đã mua từ giỏ hàng
                             clearPurchasedCartItems(userId, cartItems)
-
-                            // Điều hướng tới OrderSuccessFragment
                             findNavController().navigate(R.id.action_selectPaymentFragment_to_orderSuccessFragment)
                         }
                         .addOnFailureListener { e ->
@@ -118,6 +116,8 @@ class SelectPaymentFragment : Fragment() {
                 }
         }
     }
+
+
 
     private fun clearPurchasedCartItems(userId: String, purchasedItems: List<CartItem>) {
         val cartItemsRef = firestore.collection("carts").document(userId).collection("cartItems")
