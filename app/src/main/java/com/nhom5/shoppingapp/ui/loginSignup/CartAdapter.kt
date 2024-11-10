@@ -8,7 +8,8 @@ import com.nhom5.shoppingapp.databinding.CartListItemBinding
 import com.nhom5.shoppingapp.model.CartItem
 import android.view.View
 import android.util.Log
-
+import java.text.NumberFormat
+import java.util.Locale
 
 class CartAdapter(
     private var cartItems: List<CartItem>,
@@ -41,13 +42,17 @@ class CartAdapter(
 
     inner class CartViewHolder(private val binding: CartListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cartItem: CartItem) {
+            val numberFormat = NumberFormat.getNumberInstance(Locale.US) // Định dạng kiểu US (dấu phẩy ngăn cách)
+
             binding.cartProductTitleTv.text = cartItem.name
-            binding.cartProductPriceTv.text = "Unit Price: $${cartItem.price}" // Thêm "Unit Price: " trước giá
+            binding.cartProductPriceTv.text = "Unit Price: ${numberFormat.format(cartItem.price)}$"
+
             binding.cartProductQuantityTextView.text = cartItem.quantity.toString()
 
             // Tính toán và hiển thị Amount
             val amount = cartItem.price * cartItem.quantity
-            binding.cartProductAmountTv.text = "Amount: $%.2f".format(amount)
+            binding.cartProductAmountTv.text = "Amount: ${numberFormat.format(amount)}$"
+
 
             // Hiển thị size đã chọn
             if (cartItem.selectedSize.isNotEmpty()) {

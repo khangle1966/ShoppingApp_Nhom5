@@ -68,6 +68,11 @@ class OrdersFragment : Fragment() {
                 ordersList = querySnapshot.documents.map { document ->
                     document.toObject(Order::class.java)!!
                 }.toMutableList()
+
+                // Sắp xếp danh sách từ ngày gần nhất đến xa nhất
+                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                ordersList.sortByDescending { dateFormat.parse(it.orderDate) }
+
                 filteredOrdersList = ordersList.toMutableList()
                 updateOrdersVisibility()
                 hideLoader()
@@ -84,6 +89,7 @@ class OrdersFragment : Fragment() {
             ordersAdapter.updateOrders(filteredOrdersList)
         } else {
             binding.ordersEmptyTextView.visibility = View.VISIBLE
+            ordersAdapter.updateOrders(emptyList()) // Hiển thị danh sách rỗng nếu không có đơn hàng
         }
     }
 

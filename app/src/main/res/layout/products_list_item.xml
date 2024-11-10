@@ -70,6 +70,7 @@
             android:id="@+id/product_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
             android:textColor="@color/blue_accent_300"

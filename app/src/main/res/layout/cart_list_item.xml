@@ -112,14 +112,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="4dp"
             android:textAppearance="@style/TextAppearance.MyTheme.Body1"
             android:textColor="@color/blue_accent_300"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/cart_product_price_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/cart_product_price_tv"
             tools:text="Amount: $499.00" />
 
         <TextView
@@ -132,10 +131,9 @@
             android:textColor="@color/blue_accent_300"
             android:textSize="15sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cart_product_amount_tv"
             app:layout_constraintStart_toEndOf="@+id/product_image_view"
             app:layout_constraintTop_toBottomOf="@+id/cart_product_color_tv"
-            app:layout_constraintVertical_bias="1.0"
             tools:text="Unit Price: $1234.56" />
 
         <LinearLayout

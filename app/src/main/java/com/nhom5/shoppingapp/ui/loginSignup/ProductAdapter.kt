@@ -7,7 +7,8 @@ import com.bumptech.glide.Glide
 import com.nhom5.shoppingapp.databinding.ProductsListItemBinding
 import com.nhom5.shoppingapp.model.Product
 import com.nhom5.shoppingapp.R
-
+import java.text.NumberFormat
+import java.util.Locale
 class ProductAdapter(
     private val productList: List<Product>,
     private val onItemClick: (Product) -> Unit
@@ -26,9 +27,11 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.apply {
+            val numberFormat = NumberFormat.getNumberInstance(Locale.US) // Định dạng số kiểu US
+
             productNameTv.text = product.name
-            productPriceTv.text = "$${product.price}"
-            productActualPriceTv.text = "$${product.actualPrice}"
+            productPriceTv.text = "${numberFormat.format(product.price)}$"
+            productActualPriceTv.text = "${numberFormat.format(product.actualPrice)}$"
             productOfferValueTv.text = "-${product.offerPercentage}%"
             productRatingBar.rating = product.rating
 

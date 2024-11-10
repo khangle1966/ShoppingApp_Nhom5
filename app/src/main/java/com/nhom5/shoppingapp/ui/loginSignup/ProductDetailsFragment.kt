@@ -17,7 +17,8 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.fragment.findNavController
 import  com.nhom5.shoppingapp.R
 import android.util.Log
-
+import java.text.NumberFormat
+import java.util.Locale
 
 class ProductDetailsFragment : Fragment() {
     private lateinit var binding: FragmentProductDetailsBinding
@@ -83,10 +84,12 @@ class ProductDetailsFragment : Fragment() {
 
 
     private fun bindProductDetails(product: Product) {
+        val numberFormat = NumberFormat.getNumberInstance(Locale.US) // Định dạng số kiểu US
+
         // Hiển thị tên sản phẩm
         binding.proDetailsTitleTv.text = product.name
         // Hiển thị giá sản phẩm
-        binding.proDetailsPriceTv.text = "$${product.price}"
+        binding.proDetailsPriceTv.text = "${numberFormat.format(product.price)}$"
         // Hiển thị đánh giá sản phẩm
         binding.proDetailsRatingBar.rating = product.rating
 

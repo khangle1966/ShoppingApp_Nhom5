@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhom5.shoppingapp.databinding.CartListItemBinding
 import com.nhom5.shoppingapp.model.CartItem
-
+import java.text.NumberFormat
+import java.util.Locale
 class OrderDetailsAdapter(
     private var items: List<CartItem>
 ) : RecyclerView.Adapter<OrderDetailsAdapter.OrderDetailsViewHolder>() {
@@ -31,15 +32,18 @@ class OrderDetailsAdapter(
 
     inner class OrderDetailsViewHolder(private val binding: CartListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: CartItem) {
+            val numberFormat = NumberFormat.getNumberInstance(Locale.US) // Định dạng số kiểu US
 
             binding.cartProductTitleTv.text = item.name
-            binding.cartProductPriceTv.text = "$${String.format("%.2f", item.price)}" // Định dạng lại số tiền
+            binding.cartProductPriceTv.text = "Price: ${numberFormat.format(item.price)}$"
+            val totalAmount = item.price * item.quantity
+            binding.cartProductAmountTv.text = "Amount: ${numberFormat.format(totalAmount)}$"
             Glide.with(binding.root.context)
                 .load(item.imageUrl)
                 .into(binding.productImageView)
-            binding.cartProductSizeTv.text = "${item.selectedSize}"
-            binding.cartProductColorTv.text = "${item.selectedColor}"
-            binding.cartProductQuantityTextView.text = "${item.quantity}"
+            binding.cartProductSizeTv.text = "Size: ${item.selectedSize}"
+            binding.cartProductColorTv.text = "Color: ${item.selectedColor}"
+            binding.cartProductQuantityTextView.text =  "${item.quantity}"
 
             binding.cartProductLikeBtn.visibility = View.GONE
             binding.cartProductDeleteBtn.visibility = View.GONE

@@ -13,7 +13,8 @@ import com.nhom5.shoppingapp.databinding.FragmentCartBinding
 import com.nhom5.shoppingapp.model.CartItem
 import androidx.navigation.fragment.findNavController
 import com.nhom5.shoppingapp.R
-
+import java.text.NumberFormat
+import java.util.Locale
 class CartFragment : Fragment(), CartItemActionListener {
 
     private lateinit var binding: FragmentCartBinding
@@ -54,60 +55,57 @@ class CartFragment : Fragment(), CartItemActionListener {
     }
 
     private fun loadCartItems(userId: String) {
-        showLoader() // Hiển thị loader trước khi bắt đầu tải dữ liệu
+        showLoader()
 
         val cartRef = firestore.collection("carts").document(userId).collection("cartItems")
 
         cartRef.get()
             .addOnSuccessListener { querySnapshot ->
                 cartItems = querySnapshot.documents.map { document ->
-                    val id = document.id
-                    val name = document.getString("name") ?: ""
-                    val price = document.getDouble("price") ?: 0.0
-                    val quantity = document.getLong("quantity")?.toInt() ?: 1
-                    val imageUrl = document.getString("imageUrl") ?: ""
-                    val selectedColor = document.getString("selectedColor") ?: ""
-                    val selectedSize = document.getString("selectedSize") ?: ""
-
                     CartItem(
-                        id = id,
-                        name = name,
-                        price = price,
-                        quantity = quantity,
-                        imageUrl = imageUrl,
-                        selectedColor = selectedColor,
-                        selectedSize = selectedSize
+                        id = document.id,
+                        name = document.getString("name") ?: "",
+                        price = document.getDouble("price") ?: 0.0,
+                        quantity = document.getLong("quantity")?.toInt() ?: 1,
+                        imageUrl = document.getString("imageUrl") ?: "",
+                        selectedColor = document.getString("selectedColor") ?: "",
+                        selectedSize = document.getString("selectedSize") ?: ""
                     )
                 }.toMutableList()
 
                 if (cartItems.isNotEmpty()) {
                     binding.cartEmptyTextView.visibility = View.GONE
-                    binding.cartCheckOutBtn.isEnabled = true // Bật nút Checkout nếu có item
+                    binding.cartProductsRecyclerView.visibility = View.VISIBLE
+                    binding.cartCheckOutBtn.isEnabled = true
                     cartAdapter.updateCartItems(cartItems)
                     updateSummaryInfo()
                 } else {
                     binding.cartEmptyTextView.visibility = View.VISIBLE
-                    binding.cartCheckOutBtn.isEnabled = false // Vô hiệu hóa nút Checkout nếu giỏ hàng trống
+                    binding.cartProductsRecyclerView.visibility = View.GONE
+                    binding.cartCheckOutBtn.isEnabled = false
                 }
 
                 hideLoader()
             }
             .addOnFailureListener { e ->
                 hideLoader()
-                showError("Có lỗi xảy ra khi lấy giỏ hàng: ${e.message}")
+                showError("Có lỗi xảy ra khi tải giỏ hàng: ${e.message}")
             }
     }
 
+
     private fun updateSummaryInfo() {
+        val numberFormat = NumberFormat.getNumberInstance(Locale.US)
+
         val totalItemsPrice = cartItems.sumOf { it.price * it.quantity }
         val importCharges = totalItemsPrice * 0.1
         val shipping = if (cartItems.isNotEmpty()) 30.0 else 0.0
         totalPrice = (totalItemsPrice + shipping + importCharges).toFloat()
 
-        binding.itemsPrice.text = "$%.2f".format(totalItemsPrice)
-        binding.shippingPrice.text = "$%.2f".format(shipping)
-        binding.importChargesPrice.text = "$%.2f".format(importCharges)
-        binding.totalPrice.text = "$%.2f".format(totalPrice)
+        binding.itemsPrice.text = "${numberFormat.format(totalItemsPrice)}$"
+        binding.shippingPrice.text = "${numberFormat.format(shipping)}$"
+        binding.importChargesPrice.text = "${numberFormat.format(importCharges)}$"
+        binding.totalPrice.text = "${numberFormat.format(totalPrice)}$"
     }
 
     override fun onDelete(cartItem: CartItem) {
@@ -120,8 +118,12 @@ class CartFragment : Fragment(), CartItemActionListener {
                 cartItems.remove(cartItem)
                 cartAdapter.updateCartItems(cartItems)
                 updateSummaryInfo()
-                // Kiểm tra lại trạng thái nút Checkout
-                binding.cartCheckOutBtn.isEnabled = cartItems.isNotEmpty()
+
+                if (cartItems.isEmpty()) {
+                    binding.cartEmptyTextView.visibility = View.VISIBLE
+                    binding.cartProductsRecyclerView.visibility = View.GONE
+                    binding.cartCheckOutBtn.isEnabled = false
+                }
             }
             .addOnFailureListener { e ->
                 showError("Không thể xóa sản phẩm: ${e.message}")
@@ -129,6 +131,11 @@ class CartFragment : Fragment(), CartItemActionListener {
     }
 
     private fun onCheckOutButtonClick() {
+        if (cartItems.isEmpty()) {
+            Toast.makeText(requireContext(), "Giỏ hàng trống. Không thể thanh toán.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val action = CartFragmentDirections.actionCartFragmentToAddressSelectionFragment(totalPrice)
         findNavController().navigate(action)
     }

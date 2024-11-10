@@ -12,7 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nhom5.shoppingapp.databinding.FragmentOrderDetailsBinding
 import com.nhom5.shoppingapp.model.Order
 import com.nhom5.shoppingapp.model.CartItem
-
+import java.text.NumberFormat
+import java.util.Locale
 class OrderDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentOrderDetailsBinding
@@ -56,10 +57,12 @@ class OrderDetailsFragment : Fragment() {
                 val order = document.toObject(Order::class.java)
 
                 order?.let {
+                    val numberFormat = NumberFormat.getNumberInstance(Locale.US)
 
                     // Hiển thị các chi tiết của đơn hàng
                     binding.orderDetailsPaymentLayout.priceItemsLabelTv.text = "Items (${it.items.size})"
-                    binding.orderDetailsPaymentLayout.priceTotalAmountTv.text = "$${String.format("%.2f", it.totalPrice)}"
+                    binding.orderDetailsPaymentLayout.priceTotalAmountTv.text = "${numberFormat.format(it.totalPrice)}$"
+
                     binding.orderDetailsShippingAddLayout.purchaseDateValue.text = "${it.orderDate}"
                     binding.orderDetailsShippingAddLayout.shipAddValueTv.text = it.shippingAddress
                     binding.orderDetailsShippingAddLayout.shipCurrStatusValueTv.text = it.status
