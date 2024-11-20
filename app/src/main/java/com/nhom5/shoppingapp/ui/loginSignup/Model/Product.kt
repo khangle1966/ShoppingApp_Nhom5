@@ -9,8 +9,9 @@ data class Product(
     val rating: Float = 0f,
     val offerPercentage: String = "",
     val specifications: String = "", // Thông số sản phẩm
-
     // Thêm thuộc tính size và color
     val size: List<String> = emptyList(),   // Danh sách các size của sản phẩm
-    val color: List<String> = emptyList()   // Danh sách các màu của sản phẩm
+    val color: List<String> = emptyList(),   // Danh sách các màu của sản phẩm
+    val status: String = "Available" // Trạng thái mặc định là "Available"
+
 )

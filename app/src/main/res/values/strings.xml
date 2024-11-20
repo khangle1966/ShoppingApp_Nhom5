@@ -133,7 +133,7 @@
     <string name="back_to_home_text">Back To Home</string>
     <string name="success_img_desc">Success Tick Image</string>
     <string name="success_label">Success</string>
-    <string name="order_success_message_text">thank you for shopping</string>
+    <string name="order_success_message_text">Thank you for shopping</string>
     <string name="no_items_in_cart_text">No Products Added Yet!</string>
     <string name="bottom_nav_orders_label">Orders</string>
     <string name="account_profile_label">Profile</string>

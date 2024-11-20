@@ -146,8 +146,9 @@
             android:id="@+id/action_addressSelectionFragment_to_selectPaymentFragment"
             app:destination="@id/selectPaymentFragment">
             <argument
-                android:name="selectedAddress"
+                android:name="shippingAddress"
                 app:argType="string" />
+
             <argument
                 android:name="totalPrice"
                 app:argType="float" />

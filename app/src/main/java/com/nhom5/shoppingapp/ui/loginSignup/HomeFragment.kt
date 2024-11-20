@@ -134,8 +134,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     try {
                         // Lấy product và gán documentId vào productId
                         val product = document.toObject(Product::class.java).copy(productId = document.id)
-                        fullProductList.add(product)
-                        filteredProductList.add(product)
+
+                        // Chỉ thêm sản phẩm có trạng thái "Available"
+                        if (product.status == "Available") {
+                            fullProductList.add(product)
+                            filteredProductList.add(product)
+                        }
                     } catch (e: Exception) {
                         Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -151,12 +155,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
 
+
     private fun filterProducts(query: String) {
         val filteredList = if (query.isEmpty()) {
-            fullProductList
+            fullProductList.filter { it.status == "Available" }
         } else {
             fullProductList.filter {
-                it.name.contains(query, ignoreCase = true)
+                it.status == "Available" && it.name.contains(query, ignoreCase = true)
             }
         }
 

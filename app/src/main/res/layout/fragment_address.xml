@@ -21,48 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/address_app_bar" />
-
-    <!-- Main content layout -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
+        android:id="@+id/address_card"
+        layout="@layout/layout_address_card"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/address_app_bar"
-        android:layout_marginBottom="72dp">
+        />
 
-        <!-- Text khi không có địa chỉ nào -->
-        <TextView
-            android:id="@+id/address_empty_text_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/nunito_sans"
-            android:text="@string/no_addresses_text"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MyTheme.Headline3"
-            android:textColor="@color/blue_accent_300"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- RecyclerView để hiển thị danh sách địa chỉ -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/address_addresses_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:padding="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="2"
-            tools:listitem="@layout/layout_address_card" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Nút Next -->
     <Button
@@ -80,52 +47,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:translationY="-8dp" />
-    <Button
-        android:id="@+id/address_custom_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/address_next_btn"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/blue_accent_300"
-        android:padding="16dp"
-        android:text="Use Custom Address"
-        android:textAllCaps="false"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    <EditText
-        android:id="@+id/edit_person_name_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/address_custom_btn"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Enter Name"
-        android:textSize="16sp"
-        android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/edit_mobile_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_person_name_edit_text"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Enter Mobile Number"
-        android:inputType="phone"
-        android:textSize="16sp"
-        android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/edit_address_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_mobile_edit_text"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Enter Address"
-        android:minLines="2"
-        android:textSize="16sp"
-        android:visibility="gone" />
 
 </RelativeLayout>

@@ -1,126 +1,97 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/address_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:checkable="true"
-    android:clickable="true"
-    android:focusable="true"
     app:cardElevation="0dp"
-    app:checkedIcon="@null"
     app:strokeColor="@color/light_gray"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="243dp"
-        android:padding="22dp">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/address_delete_btn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete Address"
-            android:src="@drawable/ic_delete_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- TextView and EditText for Name -->
+        <!-- Name Label -->
         <TextView
-            android:id="@+id/address_person_name_tv"
+            android:id="@+id/label_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
-            android:textColor="@color/dark_gray"
-            android:textSize="18sp"
+            android:text="Name"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="14sp"
+            android:textColor="@color/dark_gray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Some Name" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Name EditText -->
         <EditText
             android:id="@+id/edit_person_name_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter Name"
-            android:textSize="18sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="Enter your name"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_name"
+            android:layout_marginTop="4dp" />
 
-        <!-- TextView and EditText for Mobile Number -->
+        <!-- Mobile Label -->
         <TextView
-            android:id="@+id/address_mobile_tv"
+            android:id="@+id/label_mobile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
-            android:textColor="@color/gray"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Mobile"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/dark_gray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/address_person_name_tv"
-            tools:text="+91 9999988888" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_person_name_edit_text"
+            android:layout_marginTop="8dp" />
 
+        <!-- Mobile EditText -->
         <EditText
             android:id="@+id/edit_mobile_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Enter Mobile Number"
+            android:hint="Enter your mobile number"
             android:inputType="phone"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_person_name_edit_text" />
 
-        <!-- TextView and EditText for Address -->
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_mobile"
+            android:layout_marginTop="4dp" />
+
+        <!-- Address Label -->
         <TextView
-            android:id="@+id/address_complete_address_tv"
+            android:id="@+id/label_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minLines="2"
-            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
-            android:textColor="@color/gray"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Address"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/dark_gray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/address_mobile_tv"
-            tools:text="57a/123/2/3/3 Duong gi do" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_mobile_edit_text"
+            android:layout_marginTop="8dp" />
 
+        <!-- Address EditText -->
         <EditText
             android:id="@+id/edit_address_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Enter Address"
+            android:hint="Enter your address"
             android:minLines="2"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_mobile_edit_text" />
-
-        <!-- Edit/Save Button -->
-        <Button
-            android:id="@+id/address_edit_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/blue_accent_300"
-            android:padding="8dp"
-            android:text="Edit"
-            android:textAllCaps="false"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_address_edit_text"
-            app:layout_constraintVertical_bias="1.0" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_address"
+            android:layout_marginTop="4dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

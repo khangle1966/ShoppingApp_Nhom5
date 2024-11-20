@@ -26,6 +26,7 @@ class SelectPaymentFragment : Fragment() {
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private var totalPrice: Float = 0.0f
     private var selectedAddress: String? = null
+    private var shippingAddress: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +40,7 @@ class SelectPaymentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Nhận selectedAddress và totalPrice từ AddressSelectionFragment
-        selectedAddress = arguments?.getString("selectedAddress")
+        shippingAddress = arguments?.getString("shippingAddress")
         totalPrice = arguments?.getFloat("totalPrice") ?: 0.0f
         customName = arguments?.getString("customName")
         customPhone = arguments?.getString("customPhone")
@@ -94,12 +95,12 @@ class SelectPaymentFragment : Fragment() {
                         userId = userId,
                         items = cartItems,
                         totalPrice = totalPrice.toDouble(),
-                        shippingAddress = selectedAddress ?: "No Address",
+                        shippingAddress = shippingAddress ?: "No Address",
                         paymentMethod = selectedPayment,
                         orderDate = currentDate,
                         status = "Processing",
-                        customName = customName,  // Use the custom name
-                        customPhone = customPhone // Use the custom phone
+                        customName = customName,
+                        customPhone = customPhone
                     )
 
                     firestore.collection("orders").document(orderId).set(order)

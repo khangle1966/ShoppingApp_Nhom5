@@ -51,7 +51,7 @@ class AdminFragment : Fragment(R.layout.fragment_admin) {
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
-                // Handle error here
+
             }
     }
 

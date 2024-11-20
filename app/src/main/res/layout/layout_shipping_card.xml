@@ -97,6 +97,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/customer_phone_label_tv" />
 
+        <!-- Divider -->
         <TextView
             android:id="@+id/ship_add_value_tv"
             android:layout_width="160dp"
@@ -106,11 +107,12 @@
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/ship_add_label_tv"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/ship_add_label_tv"
             app:layout_constraintTop_toTopOf="@+id/ship_add_label_tv"
-            tools:text="123, Sonmwe Soijr, Ouiwy qwei, Uytwuf, India, 208242" />
+            app:layout_constraintVertical_bias="0.53"
+            tools:text="123, Sonmwe " />
 
-        <!-- Divider -->
         <ImageView
             android:id="@+id/card_dotted_divider"
             android:layout_width="match_parent"
