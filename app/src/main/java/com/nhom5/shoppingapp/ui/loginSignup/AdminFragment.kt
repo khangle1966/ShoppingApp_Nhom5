@@ -11,6 +11,7 @@ import com.nhom5.shoppingapp.model.Product
 import com.nhom5.shoppingapp.ui.adapters.AdminProductAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 
 class AdminFragment : Fragment(R.layout.fragment_admin) {
 
@@ -62,24 +63,40 @@ class AdminFragment : Fragment(R.layout.fragment_admin) {
 
     private fun onDeleteProduct(product: Product) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Product")
-            .setMessage("Are you sure you want to delete this product?")
-            .setPositiveButton("DELETE") { dialog, _ ->
-                firestore.collection("products").document(product.productId)
-                    .delete()
-                    .addOnSuccessListener {
-                        // Update the UI after deletion
-                        productList.remove(product)
-                        adapter.notifyDataSetChanged()
-                    }
-                    .addOnFailureListener {
-                        // Handle failure
-                    }
+            .setTitle("Change Product Status")
+            .setMessage("Choose an action to change the product status:")
+            .setPositiveButton("DISABLE") { dialog, _ ->
+                // Cập nhật trạng thái của sản phẩm thành "Disabled"
+                updateProductStatus(product, "Disabled")
+                dialog.dismiss()
+            }
+            .setNeutralButton("AVAILABLE") { dialog, _ ->
+                // Cập nhật trạng thái của sản phẩm thành "Available"
+                updateProductStatus(product, "Available")
                 dialog.dismiss()
             }
             .setNegativeButton("CANCEL") { dialog, _ ->
+                // Đóng dialog mà không thực hiện thay đổi
                 dialog.dismiss()
             }
             .show()
     }
+
+    private fun updateProductStatus(product: Product, newStatus: String) {
+        firestore.collection("products").document(product.productId)
+            .update("status", newStatus)
+            .addOnSuccessListener {
+                // Cập nhật sản phẩm trong danh sách hiển thị
+                val index = productList.indexOfFirst { it.productId == product.productId }
+                if (index != -1) {
+                    productList[index] = product.copy(status = newStatus)
+                    adapter.notifyItemChanged(index)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to update product status.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 }

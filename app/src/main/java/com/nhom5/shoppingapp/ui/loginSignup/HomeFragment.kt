@@ -127,19 +127,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         firestore.collection("products")
             .get()
             .addOnSuccessListener { documents ->
-                fullProductList.clear()
-                filteredProductList.clear()
+                fullProductList.clear() // Dùng cho tìm kiếm và lọc
+                filteredProductList.clear() // Dùng cho hiển thị ban đầu
 
                 for (document in documents) {
                     try {
                         // Lấy product và gán documentId vào productId
                         val product = document.toObject(Product::class.java).copy(productId = document.id)
 
-                        // Chỉ thêm sản phẩm có trạng thái "Available"
-                        if (product.status == "Available") {
-                            fullProductList.add(product)
-                            filteredProductList.add(product)
-                        }
+                        // Thêm tất cả sản phẩm vào fullProductList và filteredProductList
+                        fullProductList.add(product)
+                        filteredProductList.add(product)
                     } catch (e: Exception) {
                         Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -156,12 +154,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
 
 
+
     private fun filterProducts(query: String) {
         val filteredList = if (query.isEmpty()) {
-            fullProductList.filter { it.status == "Available" }
+            fullProductList
         } else {
             fullProductList.filter {
-                it.status == "Available" && it.name.contains(query, ignoreCase = true)
+                it.name.contains(query, ignoreCase = true)
             }
         }
 
@@ -169,6 +168,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         filteredProductList.addAll(filteredList)
         productAdapter.notifyDataSetChanged()
     }
+
 
     private fun sortByNameAscending() {
         filteredProductList.sortWith(compareBy { it.name.trim().lowercase() })

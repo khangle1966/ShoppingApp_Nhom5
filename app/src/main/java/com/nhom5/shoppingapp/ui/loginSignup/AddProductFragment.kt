@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +18,9 @@ import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 import com.nhom5.shoppingapp.R
 import com.google.android.material.chip.Chip
+import androidx.core.content.ContextCompat
+import android.content.res.ColorStateList
+import androidx.navigation.fragment.findNavController
 
 class AddProductFragment : Fragment() {
 
@@ -38,7 +42,9 @@ class AddProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddProductBinding.inflate(inflater, container, false)
-
+        binding.addProAppBar.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         // Cấu hình RecyclerView cho hình ảnh
         imageAdapter = ImageAdapter(selectedImages) { uri -> removeImage(uri) }
         binding.addProImagesRv.layoutManager =
@@ -46,30 +52,10 @@ class AddProductFragment : Fragment() {
         binding.addProImagesRv.adapter = imageAdapter
 
         // Xử lý chọn nhiều size từ ChipGroup
-        for (i in 0 until binding.addProSizeChipGroup.childCount) {
-            val chip = binding.addProSizeChipGroup.getChildAt(i) as Chip
-            chip.setOnCheckedChangeListener { _, isChecked ->
-                val size = chip.text.toString()
-                if (isChecked) {
-                    selectedSizes.add(size) // Thêm size vào danh sách nếu được chọn
-                } else {
-                    selectedSizes.remove(size) // Xóa size khỏi danh sách nếu bỏ chọn
-                }
-            }
-        }
+        setupSizeSelection()
 
         // Xử lý chọn nhiều color từ ChipGroup
-        for (i in 0 until binding.addProColorChipGroup.childCount) {
-            val chip = binding.addProColorChipGroup.getChildAt(i) as Chip
-            chip.setOnCheckedChangeListener { _, isChecked ->
-                val color = chip.text.toString()
-                if (isChecked) {
-                    selectedColors.add(color) // Thêm color vào danh sách nếu được chọn
-                } else {
-                    selectedColors.remove(color) // Xóa color khỏi danh sách nếu bỏ chọn
-                }
-            }
-        }
+        setupColorSelection()
 
         // Mở thư viện chọn hình ảnh khi nhấn nút thêm hình ảnh
         binding.addProImagesBtn.setOnClickListener {
@@ -110,6 +96,50 @@ class AddProductFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun setupSizeSelection() {
+        binding.addProSizeChipGroup.children.forEach { view ->
+            if (view is Chip) {
+                view.setOnCheckedChangeListener { _, isChecked ->
+                    val size = view.text.toString()
+                    if (isChecked) {
+                        if (!selectedSizes.contains(size)) {
+                            selectedSizes.add(size)
+                        }
+                    } else {
+                        selectedSizes.remove(size)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupColorSelection() {
+        val colorMap = mapOf(
+            binding.colorBlack to "Đen",
+            binding.colorWhite to "Trắng",
+            binding.colorRed to "Đỏ",
+            binding.colorGreen to "Xanh Lá",
+            binding.colorBlue to "Xanh Dương",
+            binding.colorYellow to "Vàng"
+        )
+
+        colorMap.forEach { (view, colorName) ->
+            view.setOnClickListener {
+                if (selectedColors.contains(colorName)) {
+                    // Nếu đã chọn, bỏ chọn và xóa khỏi danh sách
+                    selectedColors.remove(colorName)
+                    view.strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), android.R.color.transparent))
+                } else {
+                    // Nếu chưa chọn, thêm vào danh sách và làm nổi bật viền
+                    selectedColors.add(colorName)
+                    view.strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.blue_accent_300))
+                }
+            }
+        }
+    }
+
+
 
     private fun validateInput(
         name: String,
@@ -186,11 +216,11 @@ class AddProductFragment : Fragment() {
                                     name = name,
                                     price = price,
                                     actualPrice = mrp,
-                                    imageUrl = imageUrls, // Truyền toàn bộ danh sách URL hình ảnh
+                                    imageUrl = imageUrls,
                                     rating = 0f,
                                     offerPercentage = "0",
-                                    size = selectedSizes,  // Truyền danh sách các size đã chọn
-                                    color = selectedColors,  // Truyền danh sách các màu đã chọn
+                                    size = selectedSizes,
+                                    color = selectedColors,
                                     specifications = desc
                                 )
                             )

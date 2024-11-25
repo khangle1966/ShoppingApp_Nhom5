@@ -99,6 +99,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:hint="Nhập giá sản phẩm"
                 app:boxStrokeColor="@color/blue_accent_300"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,11 +107,15 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pro_price_edit_text"
+
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:inputType="numberDecimal"
+                    android:minHeight="48dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:textColor="@color/gray"
                     android:textStyle="bold" />
 
@@ -141,6 +146,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:hint="Nhập giá niêm yết (MRP)"
                 app:boxStrokeColor="@color/blue_accent_300"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -149,12 +155,15 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pro_mrp_edit_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/gray"
-                    android:textStyle="bold" />
+                    android:layout_height="48dp"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/gray"
+                android:textStyle="bold" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -183,6 +192,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:hint="Nhập mô tả sản phẩm"
                 app:boxStrokeColor="@color/blue_accent_300"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -221,17 +231,19 @@
 
             <ImageButton
                 android:id="@+id/add_pro_images_btn"
-                android:layout_width="35dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/blue_accent_300"
-                android:contentDescription="@string/add_pro_images_label_text"
-                android:scaleType="centerCrop"
-                android:tint="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/add_pro_images_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/add_pro_images_label"
-                app:srcCompat="@drawable/ic_add_48" />
+                android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/blue_accent_300"
+            android:contentDescription="@string/add_pro_images_label_text"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/add_pro_images_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/add_pro_images_label"
+            app:srcCompat="@drawable/ic_add_48" />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/add_pro_images_rv"
@@ -306,7 +318,6 @@
                     android:text="XL" />
             </com.google.android.material.chip.ChipGroup>
 
-            <!-- Chọn Màu -->
             <TextView
                 android:id="@+id/add_pro_color_label"
                 android:layout_width="0dp"
@@ -323,68 +334,86 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_pro_size_chip_group" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/add_pro_color_chip_group"
+            <LinearLayout
+                android:id="@+id/color_selection_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                app:chipSpacingHorizontal="10dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_pro_color_label"
-                app:selectionRequired="true">
+                app:layout_constraintTop_toBottomOf="@id/add_pro_color_label">
 
-                <!-- Chỉnh layout_width và layout_height cho các Chip -->
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_black"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Đen"
-                    app:chipBackgroundColor="@color/black" />
+                <!-- Màu Đen -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_black"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Đen"
+                    android:background="@drawable/color_circle_black"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_white"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Trắng"
-                    app:chipBackgroundColor="@color/white" />
+                <!-- Màu Trắng -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_white"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Trắng"
+                    android:background="@drawable/color_circle_white"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_red"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Đỏ"
-                    app:chipBackgroundColor="@color/red_600" />
+                <!-- Màu Đỏ -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_red"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Đỏ"
+                    android:background="@drawable/color_circle_red"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_green"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xanh Lá"
-                    app:chipBackgroundColor="@color/green_500" />
+                <!-- Màu Xanh Lá -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_green"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Xanh Lá"
+                    android:background="@drawable/color_circle_green"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_blue"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xanh Dương"
-                    app:chipBackgroundColor="@color/blue_500" />
+                <!-- Màu Xanh Dương -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_blue"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Xanh Dương"
+                    android:background="@drawable/color_circle_blue"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/color_chip_yellow"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Vàng"
-                    app:chipBackgroundColor="@color/gold" />
-            </com.google.android.material.chip.ChipGroup>
+                <!-- Màu Vàng -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/color_yellow"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="Vàng"
+                    android:background="@drawable/color_circle_yellow"
+                    app:strokeColor="@android:color/transparent"
+                    app:strokeWidth="3dp" />
+            </LinearLayout>
+
+
             <!-- Thông báo lỗi -->
             <TextView
                 android:id="@+id/add_pro_error_text_view"
@@ -401,7 +430,7 @@
                 app:drawableTint="?attr/colorError"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_pro_color_chip_group" />
+                app:layout_constraintTop_toBottomOf="@id/color_selection_container" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
