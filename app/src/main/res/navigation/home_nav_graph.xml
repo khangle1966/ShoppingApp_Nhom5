@@ -81,6 +81,9 @@
             android:id="@+id/action_adminFragment_to_editProductFragment"
             app:destination="@id/editProductFragment"
             app:argType="string" />
+        <action
+            android:id="@+id/action_adminFragment_to_revenueStatsFragment"
+            app:destination="@id/revenueStatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProductFragment"
@@ -216,4 +219,10 @@
             android:name="orderId"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/revenueStatsFragment"
+        android:name="com.nhom5.shoppingapp.ui.admin.RevenueStatsFragment.RevenueStatsFragment"
+        android:label="Revenue Statistics"
+        tools:layout="@layout/fragment_revenue_stats" />
 </navigation>

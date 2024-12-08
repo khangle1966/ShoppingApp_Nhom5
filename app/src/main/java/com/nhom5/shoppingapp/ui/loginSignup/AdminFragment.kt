@@ -5,6 +5,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
+
+
 import com.nhom5.shoppingapp.R
 import com.nhom5.shoppingapp.databinding.FragmentAdminBinding
 import com.nhom5.shoppingapp.model.Product
@@ -32,6 +34,11 @@ class AdminFragment : Fragment(R.layout.fragment_admin) {
 
         // Load Products
         loadProducts()
+        binding.revenueStatisticsCard.setOnClickListener {
+            // Navigate to the RevenueStatsFragment
+            val action = AdminFragmentDirections.actionAdminFragmentToRevenueStatsFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun setupRecyclerView() {

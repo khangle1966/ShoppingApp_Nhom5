@@ -18,9 +18,9 @@
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/ic_outline_arrow_back_24"
         app:navigationIconTint="@color/gray"
-        tools:title="@string/app_name"
         app:titleTextAppearance="@style/AppBarTitleStyle"
-        app:titleTextColor="@color/black" />
+        app:titleTextColor="@color/black"
+        android:title="Shopping App" />
 
 
 </com.google.android.material.appbar.AppBarLayout>

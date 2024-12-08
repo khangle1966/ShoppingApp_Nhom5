@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nhom5.shoppingapp.databinding.LayoutListItemBinding
 
+
+
 class PaymentAdapter(private val paymentMethods: List<String>) :
     RecyclerView.Adapter<PaymentAdapter.PaymentViewHolder>() {
 
@@ -19,6 +21,7 @@ class PaymentAdapter(private val paymentMethods: List<String>) :
     override fun onBindViewHolder(holder: PaymentViewHolder, position: Int) {
         val paymentMethod = paymentMethods[position]
         holder.bind(paymentMethod, position)
+        
     }
 
     override fun getItemCount() = paymentMethods.size
