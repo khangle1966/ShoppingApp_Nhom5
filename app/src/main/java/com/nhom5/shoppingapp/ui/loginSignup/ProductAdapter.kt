@@ -28,6 +28,10 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
+        // Kiểm tra trạng thái sản phẩm trước khi bind
+        if (product.status == "Disabled") {
+            return // Nếu sản phẩm hết hàng, không bind dữ liệu và không hiển thị sản phẩm này
+        }
         holder.binding.apply {
             val numberFormat = NumberFormat.getNumberInstance(Locale.US)
 
