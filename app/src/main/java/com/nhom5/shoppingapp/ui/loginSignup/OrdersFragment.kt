@@ -61,26 +61,51 @@ class OrdersFragment : Fragment() {
     private fun loadOrders(userId: String) {
         showLoader()
 
-        val ordersRef = firestore.collection("orders").whereEqualTo("userId", userId)
+        // Truy vấn thông tin người dùng
+        firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document.exists() && document.getString("userType") == "admin") {
+                    // Nếu là admin, tải tất cả các đơn hàng
+                    firestore.collection("orders").get()
+                        .addOnSuccessListener { querySnapshot ->
+                            ordersList = querySnapshot.documents.map { document ->
+                                document.toObject(Order::class.java)!!
+                            }.toMutableList()
 
-        ordersRef.get()
-            .addOnSuccessListener { querySnapshot ->
-                ordersList = querySnapshot.documents.map { document ->
-                    document.toObject(Order::class.java)!!
-                }.toMutableList()
+                            sortAndDisplayOrders()
+                        }
+                        .addOnFailureListener { e ->
+                            hideLoader()
+                            showError("Không thể tải tất cả đơn hàng: ${e.message}")
+                        }
+                } else {
+                    // Nếu không phải admin, chỉ tải các đơn hàng của người dùng đó
+                    firestore.collection("orders").whereEqualTo("userId", userId).get()
+                        .addOnSuccessListener { querySnapshot ->
+                            ordersList = querySnapshot.documents.map { document ->
+                                document.toObject(Order::class.java)!!
+                            }.toMutableList()
 
-                // Sắp xếp danh sách từ ngày gần nhất đến xa nhất
-                val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-                ordersList.sortByDescending { dateFormat.parse(it.orderDate) }
-
-                filteredOrdersList = ordersList.toMutableList()
-                updateOrdersVisibility()
-                hideLoader()
+                            sortAndDisplayOrders()
+                        }
+                        .addOnFailureListener { e ->
+                            hideLoader()
+                            showError("Không thể tải đơn hàng của người dùng: ${e.message}")
+                        }
+                }
             }
             .addOnFailureListener { e ->
                 hideLoader()
-                showError("Có lỗi xảy ra khi tải đơn hàng: ${e.message}")
+                showError("Không thể xác định thông tin người dùng: ${e.message}")
             }
+    }
+
+    private fun sortAndDisplayOrders() {
+        val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        ordersList.sortByDescending { dateFormat.parse(it.orderDate) }
+        filteredOrdersList = ordersList.toMutableList()
+        updateOrdersVisibility()
+        hideLoader()
     }
 
     private fun updateOrdersVisibility() {
